@@ -6,10 +6,12 @@
 #include <glm\vec3.hpp>
 #include <glm\vec2.hpp>
 
+#include "Object.h"
+
 namespace cogs
 {
 		class Material;
-
+		class ResourceManager;
 		//Structure of submeshes the mesh is composed of
 		struct SubMesh
 		{
@@ -34,34 +36,36 @@ namespace cogs
 		/**
 		* Mesh class, for storing mesh data and handling rendering
 		*/
-		class Mesh
+		class Mesh : public Object
 		{
 				friend class Renderer3D;
 
-				//enum for all the buffer objects
-				enum BufferObject
-				{
-						POSITION,
-						TEXCOORD,
-						NORMAL,
-						TANGENT,
-						WORLDMAT,
+		public:
+				Mesh(const std::string& _filePath, ResourceManager* _rm);
+				~Mesh();
 
-						INDEX,
+				/**
+				* \brief render this mesh
+				*/
+				void render() const;
 
-						NUM_BUFFERS
-				};
+				/**
+				* \brief dispose of the vao and vbo's
+				*/
+				void dispose();
 
-		private:
-				MeshBoundingBox m_boundingBox;
-				MeshBoundingSphere m_boundingSphere;
+				/**
+				* \brief Checks if the mesh is valid
+				*/
+				bool isValid(const std::vector<glm::vec3>& _positions,
+						const std::vector<glm::vec2>& _uvs,
+						const std::vector<glm::vec3>& _normals,
+						const std::vector<glm::vec3>& _tangents) const;
 
-				unsigned int m_numIndices{ 0 };
-				unsigned int m_VAO{ 0 }; ///< the vao of this mesh
-				unsigned int m_VBOs[BufferObject::NUM_BUFFERS] = { 0 }; ///< the vbo's of this mesh
-
-				std::vector<SubMesh> m_subMeshes;
-				std::vector<Material*> m_materials;
+				inline const MeshBoundingSphere& getSphereBounds()  const noexcept { return m_boundingSphere; }
+				inline const MeshBoundingBox& getBoxBounds()						  const noexcept { return m_boundingBox; }
+				inline const std::vector<SubMesh>& getSubMeshes()			const noexcept { return m_subMeshes; }
+				inline const std::vector<Material*>& getMaterials()	const noexcept { return m_materials; }
 
 		private:
 				/* internal utility functions */
@@ -88,39 +92,30 @@ namespace cogs
 						std::vector<glm::vec3>& _normals,
 						std::vector<glm::vec3>& _tangents,
 						std::vector<unsigned int>& _indices);
+				
+		private:
+				//enum for all the buffer objects
+				enum BufferObject
+				{
+						POSITION,
+						TEXCOORD,
+						NORMAL,
+						TANGENT,
+						WORLDMAT,
 
-		public:
-				Mesh() {}
-				Mesh(const std::string& _filePath);
+						INDEX,
 
-				~Mesh();
+						NUM_BUFFERS
+				};
 
-				/**
-				* \brief render this mesh
-				*/
-				void render() const;
+				MeshBoundingBox m_boundingBox;
+				MeshBoundingSphere m_boundingSphere;
 
-				/**
-				* \brief dispose of the vao and vbo's
-				*/
-				void dispose();
+				unsigned int m_numIndices{ 0 };
+				unsigned int m_VAO{ 0 }; ///< the vao of this mesh
+				unsigned int m_VBOs[BufferObject::NUM_BUFFERS] = { 0 }; ///< the vbo's of this mesh
 
-				/**
-				* \brief Checks if the mesh is valid
-				*/
-				bool isValid(const std::vector<glm::vec3>& _positions,
-						const std::vector<glm::vec2>& _uvs,
-						const std::vector<glm::vec3>& _normals,
-						const std::vector<glm::vec3>& _tangents) const;
-
-				/**
-				* \brief loads mesh data into this object (buffer objects, vertex data etc.)
-				*/
-				void load(const std::string& _filePath);
-
-				inline const MeshBoundingSphere& getSphereBounds()  const noexcept { return m_boundingSphere; }
-				inline const MeshBoundingBox& getBoxBounds()						  const noexcept { return m_boundingBox; }
-				inline const std::vector<SubMesh>& getSubMeshes()			const noexcept { return m_subMeshes; }
-				inline const std::vector<Material*>& getMaterials()	const noexcept { return m_materials; }
+				std::vector<SubMesh> m_subMeshes;
+				std::vector<Material*> m_materials;
 		};
 }

@@ -11,6 +11,7 @@ namespace cogs
 		class Renderer2D;
 		class Renderer3D;
 		class ParticleRenderer;
+		class ResourceManager;
 
 		class Scene
 		{
@@ -34,6 +35,7 @@ namespace cogs
 				Renderer3D* getRenderer3D();
 				ParticleRenderer* getParticleRenderer();
 				SceneManager* getSceneManager();
+				ResourceManager* getResourceManager();
 
 				void	exitApplication();
 		private:

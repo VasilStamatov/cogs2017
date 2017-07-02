@@ -50,6 +50,10 @@ namespace cogs
 		{
 				return &m_app->m_sceneManager;
 		}
+		ResourceManager * Scene::getResourceManager()
+		{
+				return &m_app->m_resourceManager;
+		}
 		void Scene::exitApplication()
 		{
 				m_app->m_running = false;

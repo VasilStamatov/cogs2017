@@ -6,32 +6,8 @@
 
 namespace cogs
 {
-		GLCubemapTexture::GLCubemapTexture(const std::string & _name, const std::vector<std::string>& _fileNames)
+		GLCubemapTexture::GLCubemapTexture(const std::vector<std::string>& _fileNames)
 		{
-				load(_name, _fileNames);
-		}
-		GLCubemapTexture::GLCubemapTexture()
-		{
-		}
-		GLCubemapTexture::~GLCubemapTexture()
-		{
-				if (m_id != 0)
-				{
-						glDeleteTextures(1, &m_id);
-						m_id = 0;
-				}
-		}
-		void GLCubemapTexture::bind() const
-		{
-				glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
-		}
-		void GLCubemapTexture::unbind() const
-		{
-				glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
-		}
-		void GLCubemapTexture::load(const std::string & _name, const std::vector<std::string>& _fileNames)
-		{
-				m_name = _name;
 				m_fileNames = _fileNames;
 
 				m_id = SOIL_load_OGL_cubemap
@@ -53,7 +29,24 @@ namespace cogs
 
 				/*if (!loadCubemap(m_fileNames, &m_width, &m_height, &m_id))
 				{
-						throw std::runtime_error("Texture failed to load");
+				throw std::runtime_error("Texture failed to load");
 				}*/
+		}
+		
+		GLCubemapTexture::~GLCubemapTexture()
+		{
+				if (m_id != 0)
+				{
+						glDeleteTextures(1, &m_id);
+						m_id = 0;
+				}
+		}
+		void GLCubemapTexture::bind() const
+		{
+				glBindTexture(GL_TEXTURE_CUBE_MAP, m_id);
+		}
+		void GLCubemapTexture::unbind() const
+		{
+				glBindTexture(GL_TEXTURE_CUBE_MAP, 0);
 		}
 }

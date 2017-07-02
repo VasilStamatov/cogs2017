@@ -6,23 +6,8 @@
 
 namespace cogs
 {
-		GLTexture2D::GLTexture2D(const std::string & _name, const std::string & _filePath)
+		GLTexture2D::GLTexture2D(const std::string & _filePath)
 		{
-				load(_name, _filePath);
-		}
-
-		GLTexture2D::~GLTexture2D()
-		{
-				if (m_id != 0)
-				{
-						glDeleteTextures(1, &m_id);
-						m_id = 0;
-				}
-		}
-
-		void GLTexture2D::load(const std::string& _name, const std::string & _filePath)
-		{
-				m_name = _name;
 				m_filePath = _filePath;
 
 				m_id = SOIL_load_OGL_texture(m_filePath.c_str(), SOIL_LOAD_AUTO, m_id,
@@ -39,9 +24,17 @@ namespace cogs
 
 				/*if (!loadTexture(m_filePath.c_str(), _alpha, &m_width, &m_height, &m_id))
 				{
-						throw std::runtime_error("Texture failed to load");
-				}*/
+				throw std::runtime_error("Texture failed to load");
+								}*/
+		}
 
+		GLTexture2D::~GLTexture2D()
+		{
+				if (m_id != 0)
+				{
+						glDeleteTextures(1, &m_id);
+						m_id = 0;
+				}
 		}
 		void GLTexture2D::bind() const
 		{

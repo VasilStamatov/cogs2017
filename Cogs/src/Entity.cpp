@@ -7,9 +7,9 @@ namespace cogs
 				m_transform = addComponent<Transform>();
 		}
 
-		Entity::Entity(EntityManager * _manager, const std::string & _name) :
-				m_manager{ _manager }, m_name{ _name }
+		Entity::Entity(EntityManager * _manager, const std::string & _name) : m_manager{ _manager }
 		{
+				setName(_name);
 				m_transform = addComponent<Transform>();
 		}
 
@@ -59,16 +59,6 @@ namespace cogs
 				return m_tag;
 		}
 
-		void Entity::setName(const std::string & _name)
-		{
-				m_name = _name;
-		}
-
-		const std::string & Entity::getName() const noexcept
-		{
-				return m_name;
-		}
-
 		void Entity::setActive(bool _active)
 		{
 				m_isActive = _active;
@@ -83,15 +73,6 @@ namespace cogs
 				return m_isActive;
 		}
 
-		void Entity::destroy()
-		{
-				m_isAlive = false;
-		}
-
-		bool Entity::isAlive() const noexcept
-		{
-				return m_isAlive;
-		}
 		void Entity::destroyOnLoad(bool _flag)
 		{
 				m_destroyOnLoad = _flag;

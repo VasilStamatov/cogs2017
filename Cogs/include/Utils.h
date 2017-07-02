@@ -51,7 +51,8 @@ namespace cogs
 		* \param _indices	  - vector of unsigned ints indices to fill for indexed rendering
 		* \param _materials	- vector of Materials that the mesh has to fill
 		*/
-		extern void loadMesh(const std::string& _filePath,
+		extern void loadMesh(ResourceManager* _rm,
+				const std::string& _filePath,
 				std::vector<SubMesh>& _subMeshes,
 				std::vector<glm::vec3>& _positions,
 				std::vector<glm::vec2>& _uvs,

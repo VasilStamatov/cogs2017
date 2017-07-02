@@ -2,7 +2,7 @@
 
 namespace cogs
 {
-		Material::Material(const std::string & _name)
+		Material::Material()
 		{
 		}
 		Material::~Material()
@@ -21,19 +21,19 @@ namespace cogs
 
 				if (m_diffuseMap)
 				{
-						m_shader->uploadValue("material." + m_diffuseMap->getName(), slot++, m_diffuseMap);
+						m_shader->uploadValue("material.texture_diffuse", slot++, m_diffuseMap);
 				}
 				if (m_normalMap)
 				{
-						m_shader->uploadValue("material." + m_normalMap->getName(), slot++, m_normalMap);
+						m_shader->uploadValue("material.texture_normal", slot++, m_normalMap);
 				}
 				if (m_specularMap)
 				{
-						m_shader->uploadValue("material." + m_specularMap->getName(), slot++, m_specularMap);
+						m_shader->uploadValue("material.texture_specular", slot++, m_specularMap);
 				}
 				if (m_reflectionMap)
 				{
-						m_shader->uploadValue("material." + m_reflectionMap->getName(), slot++, m_reflectionMap);
+						m_shader->uploadValue("material.texture_reflection", slot++, m_reflectionMap);
 				}
 
 				m_shader->uploadValue("material.shininess", m_shininess);
@@ -93,16 +93,6 @@ namespace cogs
 		GLTexture2D* Material::getReflectionMap()
 		{
 				return m_reflectionMap; 
-		}
-
-		// name getter and setter
-		void Material::setName(const std::string& _name)
-		{
-				m_name = _name; 
-		}
-		const std::string& Material::getName() 
-		{
-				return m_name; 
 		}
 
 		// shininess getter and setter

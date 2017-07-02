@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../../dependencies/include/glm/vec3.hpp"
+#include "Object.h"
 
 namespace cogs
 {
@@ -24,7 +25,7 @@ namespace cogs
 		class Entity;
 
 		/** The component class game components will inherit from*/
-		class Component
+		class Component : public Object
 		{
 				friend class Entity;
 

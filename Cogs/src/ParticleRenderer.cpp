@@ -12,7 +12,7 @@
 
 namespace cogs
 {
-		ParticleRenderer::ParticleRenderer()
+		ParticleRenderer::ParticleRenderer(ResourceManager& _rm) : m_rm{ _rm }
 		{
 		}
 		ParticleRenderer::~ParticleRenderer()
@@ -21,7 +21,7 @@ namespace cogs
 		}
 		void ParticleRenderer::init()
 		{
-				m_shader = ResourceManager::getGLSLProgram("DefaultParticle", "Shaders/DefaultParticle.vs", "Shaders/DefaultParticle.fs");
+				m_shader = m_rm.get<GLSLProgram>("DefaultParticle", "Shaders/DefaultParticle.vs", "Shaders/DefaultParticle.fs");
 				//generate the vertex array buffer
 				glGenVertexArrays(1, &m_VAO);
 

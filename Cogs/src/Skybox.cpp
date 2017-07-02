@@ -9,16 +9,16 @@
 
 namespace cogs
 {
-		Skybox::Skybox(GLSLProgram* _shader, GLCubemapTexture* _cubemapTex, bool _isBox) :
+		Skybox::Skybox(ResourceManager* _rm, GLSLProgram* _shader, GLCubemapTexture* _cubemapTex, bool _isBox) :
 				m_skyboxShader(_shader), m_cubemapTex(_cubemapTex)
 		{
 				if (_isBox)
 				{
-						m_mesh = ResourceManager::getMesh("Models/TestModels/cube.obj");
+						m_mesh = _rm->get<Mesh>("Cube", "Models/TestModels/cube.obj", _rm);
 				}
 				else
 				{
-						m_mesh = ResourceManager::getMesh("Models/TestModels/sphere.obj");
+						m_mesh = _rm->get<Mesh>("Sphere", "Models/TestModels/sphere.obj", _rm);
 				}
 		}
 

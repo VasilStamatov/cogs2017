@@ -13,6 +13,8 @@
 #include <Cogs\include\Button.h>
 #include <Cogs\include\Camera.h>
 #include <Cogs\include\Input.h>
+#include <Cogs\include\Mesh.h>
+#include <Cogs\include\GLCubemapTexture.h>
 
 class SpriteController : public cogs::Component
 {
@@ -172,9 +174,11 @@ void TestScene::OnEntry()
 		skyboxFilenames.at(4) = "Textures/space/cwd_bk.jpg";
 		skyboxFilenames.at(5) = "Textures/space/cwd_ft.jpg";
 
-		cogs::Skybox* testSkybox = cogs::ResourceManager::getSkybox("TestSkybox",
-				cogs::ResourceManager::getGLSLProgram("SkyboxShader", "Shaders/Skybox.vs", "Shaders/Skybox.fs"),
-				cogs::ResourceManager::getGLCubemap("skyboxTexture", skyboxFilenames), true);
+		cogs::ResourceManager* rm = getResourceManager();
+
+		cogs::Skybox* testSkybox = rm->get<cogs::Skybox>("TestSkybox", rm,
+				rm->get<cogs::GLSLProgram>("SkyboxShader", "Shaders/Skybox.vs", "Shaders/Skybox.fs"),
+				rm->get<cogs::GLCubemapTexture>("skyboxTexture", skyboxFilenames), true);
 
 		cogs::Entity* mainCamera = createEntity("MainCamera");
 		mainCamera->transform()->translate(glm::vec3(0.0f, 0.0f, 55.0f));
@@ -190,7 +194,7 @@ void TestScene::OnEntry()
 
 		cogs::Entity* paddle = createEntity("PlayerPaddle");
 		paddle->setTag("Paddle");
-		paddle->addComponent<cogs::MeshRenderer>(cogs::ResourceManager::getMesh("Models/TestModels/cube.obj"), getRenderer3D());
+		paddle->addComponent<cogs::MeshRenderer>(rm->get<cogs::Mesh>("Cube", "Models/TestModels/cube.obj", rm), getRenderer3D());
 		paddle->transform()->setWorldScale(glm::vec3(2.0f, 0.5f, 1.0f));
 		paddle->transform()->translate(glm::vec3(0.0f, -3.0f, 0.0f));
 		paddle->addComponent<cogs::BoxCollider>(glm::vec3(2.0f, 0.5f, 1.0f));
@@ -227,7 +231,7 @@ void TestScene::OnEntry()
 
 		cogs::Entity* ball = createEntity("Ball");
 		ball->setTag("ball");
-		ball->addComponent<cogs::MeshRenderer>(cogs::ResourceManager::getMesh("Models/TestModels/sphere.obj"), getRenderer3D());
+		ball->addComponent<cogs::MeshRenderer>(rm->get<cogs::Mesh>("Sphere", "Models/TestModels/sphere.obj", rm), getRenderer3D());
 		ball->transform()->translate(glm::vec3(0.0f, 3.0f, 0.0f));
 		ball->addComponent<cogs::SphereCollider>(1.0f);
 		ball->addComponent<cogs::RigidBody>(getPhysicsWorld(), 1.0f);
@@ -242,7 +246,7 @@ void TestScene::OnEntry()
 				{
 						cogs::Entity* brick = createEntity("Brick");
 						brick->setTag("brick");
-						brick->addComponent<cogs::MeshRenderer>(cogs::ResourceManager::getMesh("Models/TestModels/cube.obj"), getRenderer3D());
+						brick->addComponent<cogs::MeshRenderer>(rm->get<cogs::Mesh>("Cube", "Models/TestModels/cube.obj", rm), getRenderer3D());
 						brick->transform()->translate(glm::vec3(0.0f + i, 30.0f + j, 0.0f));
 						brick->addComponent<cogs::BoxCollider>(glm::vec3(1.0f, 1.0f, 1.0f));
 						brick->addComponent<cogs::RigidBody>(getPhysicsWorld(), 0.0f);

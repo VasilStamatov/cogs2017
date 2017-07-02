@@ -1,5 +1,4 @@
 #include "../include/BulletDebugRenderer.h"
-#include "../include/ResourceManager.h"
 
 #include "../include/Entity.h"
 #include "../include/MeshRenderer.h"
@@ -40,9 +39,9 @@ namespace cogs
 				}
 		}
 
-		void BulletDebugRenderer::init()
+		void BulletDebugRenderer::init(ResourceManager& _rm)
 		{
-				m_shader = ResourceManager::getGLSLProgram("DebugShader", "Shaders/DebugShader.vert", "Shaders/DebugShader.frag");
+				m_shader = _rm.get<GLSLProgram>("DebugShader", "Shaders/DebugShader.vert", "Shaders/DebugShader.frag");
 				// Generate the buffers
 				glGenVertexArrays(1, &m_vao);
 				glGenBuffers(1, &m_vbo);

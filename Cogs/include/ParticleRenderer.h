@@ -2,6 +2,7 @@
 
 #include "Renderer.h"
 #include "Color.h"
+#include "ResourceManager.h"
 
 #include <unordered_map>
 #include <vector>
@@ -54,12 +55,12 @@ namespace cogs
 				std::unordered_map<unsigned int, InstanceData> m_particlesMap;
 
 				GLSLProgram* m_shader;
-
+				ResourceManager& m_rm;
 		private:
 				void sortParticles();
 
 		public:
-				ParticleRenderer();
+				ParticleRenderer(ResourceManager& _rm);
 				~ParticleRenderer();
 
 				//The first function called by the renderer

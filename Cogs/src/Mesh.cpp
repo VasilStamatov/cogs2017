@@ -2,15 +2,24 @@
 
 #include "../include/Utils.h"
 #include "../include/Material.h"
+#include "../include/ResourceManager.h"
 
 #include <glm\glm.hpp>
 #include <GL\glew.h>
 
 namespace cogs
 {
-		Mesh::Mesh(const std::string & _filePath)
+		Mesh::Mesh(const std::string& _filePath, ResourceManager* _rm)
 		{
-				load(_filePath);
+				std::vector<glm::vec3> positions;
+				std::vector<glm::vec2> uvs;
+				std::vector<glm::vec3> normals;
+				std::vector<glm::vec3> tangents;
+				std::vector<unsigned int> indices;
+
+				loadMesh(_rm, _filePath, m_subMeshes, positions, uvs, normals, tangents, indices, m_materials);
+
+				createBuffers(positions, uvs, normals, tangents, indices);
 		}
 
 		Mesh::~Mesh()
@@ -53,19 +62,6 @@ namespace cogs
 				return _positions.size() == _uvs.size()
 						&& _uvs.size() == _normals.size()
 						&& _normals.size() == _tangents.size();
-		}
-
-		void Mesh::load(const std::string & _filePath)
-		{
-				std::vector<glm::vec3> positions;
-				std::vector<glm::vec2> uvs;
-				std::vector<glm::vec3> normals;
-				std::vector<glm::vec3> tangents;
-				std::vector<unsigned int> indices;
-
-				loadMesh(_filePath, m_subMeshes, positions, uvs, normals, tangents, indices, m_materials);
-
-				createBuffers(positions, uvs, normals, tangents, indices);
 		}
 
 		void Mesh::calcBounds(const std::vector<glm::vec3>& _positions)

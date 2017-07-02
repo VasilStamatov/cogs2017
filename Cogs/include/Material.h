@@ -12,21 +12,10 @@ namespace cogs
 		* \brief The material class to represent the material which
 		* contains different textures to bind before rendering
 		*/
-		class Material
+		class Material : public Object
 		{
-		private:
-				std::string m_name{ "" }; ///< the name of the material
-				float m_shininess{ 8.0f }; ///< shininess value of the material
-
-				GLSLProgram* m_shader{ nullptr };
-
-				GLTexture2D* m_diffuseMap{ nullptr }; ///< the diffuse map texture
-				GLTexture2D* m_normalMap{ nullptr }; ///< the normal map texture
-				GLTexture2D* m_specularMap{ nullptr }; ///< the specular map texture
-				GLTexture2D* m_reflectionMap{ nullptr }; ///< the reflection map texture
-
 		public:
-				Material(const std::string& _name);
+				Material();
 				~Material();
 
 				void bind();
@@ -51,14 +40,21 @@ namespace cogs
 				void setReflectionMap(GLTexture2D* _reflectionMap);
 				GLTexture2D* getReflectionMap();
 
-				// name getter and setter
-				void setName(const std::string& _name);
-				const std::string& getName();
-
 				// shininess getter and setter
 				void setShininess(float _shininess);
 				float getShininess();
 
 				bool isValid();
+
+		private:
+				float m_shininess{ 8.0f }; ///< shininess value of the material
+
+				GLSLProgram* m_shader{ nullptr };
+
+				GLTexture2D* m_diffuseMap{ nullptr }; ///< the diffuse map texture
+				GLTexture2D* m_normalMap{ nullptr }; ///< the normal map texture
+				GLTexture2D* m_specularMap{ nullptr }; ///< the specular map texture
+				GLTexture2D* m_reflectionMap{ nullptr }; ///< the reflection map texture
+
 		};
 }

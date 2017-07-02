@@ -87,7 +87,8 @@ namespace cogs
 				return true;
 		}
 
-		void loadMesh(const std::string& _filePath,
+		void loadMesh(ResourceManager* _rm,
+				const std::string& _filePath,
 				std::vector<SubMesh>& _subMeshes,
 				std::vector<glm::vec3>& _positions,
 				std::vector<glm::vec2>& _uvs,
@@ -174,7 +175,7 @@ namespace cogs
 
 						std::string materialName = directory + "/" + scene->mRootNode->mName.C_Str() + std::to_string(i);
 
-						Material* material = ResourceManager::getMaterial(materialName);
+						Material* material = _rm->get<Material>(materialName);
 
 						if (!material->isValid())
 						{
@@ -183,27 +184,31 @@ namespace cogs
 								{
 										aiString str;
 										paiMaterial->GetTexture(aiTextureType_DIFFUSE, 0, &str);
-										material->setDiffuseMap(ResourceManager::getGLTexture2D(directory + "/" + str.C_Str(), "texture_diffuse"));
+										std::string filepath = directory + "/" + str.C_Str();
+										material->setDiffuseMap(_rm->get<GLTexture2D>(filepath, filepath));
 								}
 								if (paiMaterial->GetTextureCount(aiTextureType_SPECULAR) > 0)
 								{
 										aiString str;
 										paiMaterial->GetTexture(aiTextureType_SPECULAR, 0, &str);
-										material->setSpecularMap(ResourceManager::getGLTexture2D(directory + "/" + str.C_Str(), "texture_specular"));
+										std::string filepath = directory + "/" + str.C_Str();
+										material->setSpecularMap(_rm->get<GLTexture2D>(filepath, filepath));
 								}
 								if (paiMaterial->GetTextureCount(aiTextureType_AMBIENT) > 0)
 								{
 										aiString str;
 										paiMaterial->GetTexture(aiTextureType_AMBIENT, 0, &str);
-										material->setReflectionMap(ResourceManager::getGLTexture2D(directory + "/" + str.C_Str(), "texture_reflection"));
+										std::string filepath = directory + "/" + str.C_Str();
+										material->setReflectionMap(_rm->get<GLTexture2D>(filepath, filepath));
 								}
 								if (paiMaterial->GetTextureCount(aiTextureType_HEIGHT) > 0)
 								{
 										aiString str;
 										paiMaterial->GetTexture(aiTextureType_HEIGHT, 0, &str);
-										material->setNormalMap(ResourceManager::getGLTexture2D(directory + "/" + str.C_Str(), "texture_normal"));
+										std::string filepath = directory + "/" + str.C_Str();
+										material->setNormalMap(_rm->get<GLTexture2D>(filepath, filepath));
 								}
-								material->setShader(ResourceManager::getGLSLProgram("Default3D", "Shaders/Default3DUnlit.vs", "Shaders/Default3DUnlit.fs"));
+								material->setShader(_rm->get<GLSLProgram>("Default3D", "Shaders/Default3DUnlit.vs", "Shaders/Default3DUnlit.fs"));
 						}
 						_materials.at(i) = material;
 				}

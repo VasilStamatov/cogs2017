@@ -4,6 +4,7 @@
 #include <vector>
 #include <memory>
 #include <glm\mat4x4.hpp>
+#include "ResourceManager.h"
 
 namespace cogs
 {
@@ -41,11 +42,12 @@ namespace cogs
 				unsigned int m_numElements{ 0 }; ///< number of indices
 
 				GLSLProgram* m_shader; ///< reference to the shader used to render
+
 		public:
 				BulletDebugRenderer();
 				virtual ~BulletDebugRenderer();
 
-				void init();
+				void init(ResourceManager& _rm);
 
 				void drawMeshSphereBounds(Entity* _entity);
 				/**

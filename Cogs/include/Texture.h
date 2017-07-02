@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Object.h"
+
 namespace cogs
 {
 		using uint = unsigned int;
@@ -7,7 +9,7 @@ namespace cogs
 		/**
 		* \brief Base texture class for other textures to derive from
 		*/
-		class Texture
+		class Texture : public Object
 		{
 		protected:
 				uint m_id{ 0 }; ///< the ID/handle of the texture

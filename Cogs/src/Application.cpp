@@ -35,9 +35,9 @@ namespace cogs
 				cogs::GUI::hideMouseCursor();
 
 				//m_window.showMouseCursor(false);
-
+				
 #if DEBUG_TEST
-				m_debugRenderer.init();
+				m_debugRenderer.init(m_resourceManager);
 				m_debugRenderer.setDebugMode(m_debugRenderer.DBG_DrawWireframe);
 				m_physics.setDebugDrawer(&m_debugRenderer);
 #endif
@@ -106,6 +106,7 @@ namespace cogs
 				m_entityManager.refresh();
 				m_physics.stepSimulation();
 				GUI::update();
+				m_resourceManager.refresh();
 		}
 
 		void Application::handleEvents()
@@ -215,7 +216,6 @@ namespace cogs
 		{
 				m_entityManager.clear();
 				GUI::destroy();
-				ResourceManager::clear();
 				m_window.close();
 		}
 

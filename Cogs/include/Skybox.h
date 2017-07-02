@@ -1,20 +1,21 @@
 #pragma once
 
-#include <memory>
+#include "Object.h"
 
 namespace cogs
 {
 		class GLCubemapTexture;
 		class Mesh;
 		class GLSLProgram;
+		class ResourceManager;
 
 		/**
 		* \brief Skybox class to handle creation of a skybox and its rendering
 		*/
-		class Skybox
+		class Skybox : public Object
 		{
 		public:
-				Skybox(GLSLProgram* _shader, GLCubemapTexture* _cubemapTex, bool _isBox);
+				Skybox(ResourceManager* _rm, GLSLProgram* _shader, GLCubemapTexture* _cubemapTex, bool _isBox);
 				~Skybox();
 
 				/** \brief renders the skybox */

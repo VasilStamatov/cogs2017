@@ -18,9 +18,9 @@ namespace cogs
 
 		}
 
-		GLSLProgram::GLSLProgram(const std::string& _name, const std::string & _vsFilePath, const std::string & _fsFilePath, const std::string & _gsFilePath)
+		GLSLProgram::GLSLProgram(const std::string & _vsFilePath, const std::string & _fsFilePath, const std::string & _gsFilePath)
 		{
-				compileShaders(_name, _vsFilePath, _fsFilePath, _gsFilePath);
+				compileShaders(_vsFilePath, _fsFilePath, _gsFilePath);
 		}
 
 		GLSLProgram::~GLSLProgram()
@@ -28,10 +28,8 @@ namespace cogs
 		}
 
 		//Compiles the shaders into a form that your GPU can understand
-		void GLSLProgram::compileShaders(const std::string& _name, const std::string& _vsFilePath, const std::string& _fsFilePath, const std::string& _gsFilePath/* = ""*/)
+		void GLSLProgram::compileShaders(const std::string& _vsFilePath, const std::string& _fsFilePath, const std::string& _gsFilePath/* = ""*/)
 		{
-				m_programName = _name;
-
 				std::string vsSource;
 				std::string fsSource;
 				std::string gsSource;
