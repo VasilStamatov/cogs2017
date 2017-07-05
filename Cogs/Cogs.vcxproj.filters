@@ -80,7 +80,6 @@
     <ClCompile Include="src\Random.cpp" />
     <ClCompile Include="src\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer3D.cpp" />
-    <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Timing.cpp" />
     <ClCompile Include="src\SpriteRenderer.cpp" />
     <ClCompile Include="src\Spinner.cpp" />

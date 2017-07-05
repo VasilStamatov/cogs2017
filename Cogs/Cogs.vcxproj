@@ -95,7 +95,6 @@
     <ClCompile Include="src\Random.cpp" />
     <ClCompile Include="src\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer3D.cpp" />
-    <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\RIgidBody.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
