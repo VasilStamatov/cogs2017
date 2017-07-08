@@ -23,15 +23,7 @@ namespace cogs
 						{
 								if (_resName == m_resources.at(i)->getName())
 								{
-										if (T* ret = dynamic_cast<T*>(m_resources.at(i).get()))
-										{
-												return ret;
-										}
-										else
-										{
-												throw "invalid type, must inherit from Object";
-										}
-										//return static_cast<T*>(m_resources.at(i).get());
+										return static_cast<T*>(m_resources.at(i).get());
 								}
 						}
 						T* newRes(new T(std::forward<TArgs>(_constructionArgs)...));
