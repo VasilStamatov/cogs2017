@@ -182,7 +182,7 @@ void TestScene::OnEntry()
 
 		cogs::Entity* mainCamera = createEntity("MainCamera");
 		mainCamera->transform()->translate(glm::vec3(0.0f, 0.0f, 55.0f));
-		//mainCamera->addComponent<cogs::FPSCameraControl>(50.0f);
+		mainCamera->addComponent<cogs::FPSCameraControl>(50.0f);
 		cogs::Camera* cam = mainCamera->addComponent<cogs::Camera>();
 		//cam->setBackgroundColor(cogs::Color::black);
 		cam->setProjectionType(false);

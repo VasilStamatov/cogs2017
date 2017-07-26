@@ -18,12 +18,15 @@
 
 namespace cogs
 {
-		class Application
+		class Application final
 		{
 				friend class Scene;
 		public:
 				Application();
 				~Application();
+
+				Application(const Application& _other) = delete;
+				Application& operator=(const Application& _rhs) = delete;
 
 				void run(const std::string& _windowName, int _windowWidth, int _windowHeight);
 
@@ -36,22 +39,22 @@ namespace cogs
 				void render();
 				void shutdown();
 				void setDesiredFPS(float _fps);
+
 		private:
-				bool m_running{ false };
-
-				Window m_window{};
-				FpsLimiter m_fpsLimiter{ 1000.0f };
-				SceneManager m_sceneManager{ this };
-				EntityManager m_entityManager{};
-				Renderer2D m_renderer2D{};
-				Renderer3D m_renderer3D{};
-				Physics m_physics{ 0.0f, -9.81f, 0.0f };
-				ResourceManager m_resourceManager;
-				ParticleRenderer m_particleRenderer{ m_resourceManager };
-
-#if DEBUG_TEST
-				BulletDebugRenderer m_debugRenderer{};
+				Window m_window{}; //40
+				FpsLimiter m_fpsLimiter{ 1000.0f };	//40
+				SceneManager m_sceneManager{ this };	//24
+				EntityManager m_entityManager{};	//16
+				Renderer2D m_renderer2D{};	//68
+				Renderer3D m_renderer3D{};	//44
+				Physics m_physics{ 0.0f, -9.81f, 0.0f };	//48
+				ResourceManager m_resourceManager;	//16
+				ParticleRenderer m_particleRenderer{ m_resourceManager };	//68
+																																																																								
+#if DEBUG_TEST																																																										
+				BulletDebugRenderer m_debugRenderer{}; //60
 #endif
 
+				bool m_running{ false }; // 1
 		};
 }

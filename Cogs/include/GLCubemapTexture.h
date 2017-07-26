@@ -6,9 +6,6 @@
 
 namespace cogs
 {
-		/**
-		* \brief class to handle opengl cubemap textures
-		*/
 		class GLCubemapTexture : public Texture
 		{
 		public:
@@ -23,12 +20,9 @@ namespace cogs
 				GLCubemapTexture(const std::vector<std::string>& _fileNames);
 			 ~GLCubemapTexture();
 
-				/**
-				* \brief overriden bind/unbind functions from the base Texture class
-				*/
 				void bind()   const override;
 				void unbind() const override;
 		private:
-				std::vector<std::string> m_fileNames; ///< set of the 6 filenamesof each texture
+				std::vector<std::string> m_fileNames;
 		};
 }

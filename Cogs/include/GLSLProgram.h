@@ -170,15 +170,15 @@ namespace cogs
 						UniformLocation getUniformLoc(const std::string& _uniformName);
 
 		private:
+				/* a map of the locations in the shader for ease of access */
+				std::unordered_map<std::string, AttribLocation> m_attribList;
+				std::unordered_map<std::string, UniformLocation> m_unifLocationList;
+
 				ProgramID m_programID{ 0 };
 
 				/* The Id's of each shader */
 				ShaderID m_vertexShaderID{ 0 };
 				ShaderID m_fragmentShaderID{ 0 };
 				ShaderID m_geometryShaderID{ 0 };
-
-				/* a map of the locations in the shader for ease of access */
-				std::unordered_map<std::string, AttribLocation> m_attribList;
-				std::unordered_map<std::string, UniformLocation> m_unifLocationList;
 		};
 }

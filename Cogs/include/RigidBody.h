@@ -15,19 +15,7 @@ namespace cogs
 		*/
 		class RigidBody : public Component
 		{
-		protected:
-				void init() override;
-
-				std::unique_ptr<btRigidBody> m_rigidBody{ nullptr }; ///< the rigid body that bullet uses
-				std::unique_ptr<CMotionState> m_motionState{ nullptr }; ///< motion state implementation for this engine
-				Physics* m_physicsWorld; ///< the world this rigidbody belongs to
-				float m_mass{ 0.0f }; ///< the mass of this rigid body
-				bool m_isKinematic{ false }; ///< flag wether this body is kinematic or not
-
 		public:
-				/**
-				* Pass the mass that this entity should be (keep it between 0.0f and 1.0f)
-				*/
 				RigidBody(Physics* _physicsWorld, float _mass = 1.0f, bool _isKinematic = false);
 				~RigidBody();
 
@@ -79,19 +67,10 @@ namespace cogs
 				*/
 				void setAngularFactor(const glm::vec3& _offset);
 
-				/**
-				* unknown
-				*/
 				void setDamping(float _x, float _y);
 
-				/**
-				* Sets the rigidbody transform to equal the transform component's world transform
-				*/
 				void setWorldTransform();
 
-				/**
-				* Activates the rigidbody
-				*/
 				void activate();
 
 				/**
@@ -106,11 +85,18 @@ namespace cogs
 				*/
 				void setActivationState(int _state);
 
-				/**
-				* Getters
-				*/
 				int getActivationState() const { return m_rigidBody->getActivationState(); }
 
 				btRigidBody* getRigidBody() { return m_rigidBody.get(); }
+
+		protected:
+				void init() override;
+
+		private:
+				std::unique_ptr<btRigidBody> m_rigidBody{ nullptr }; ///< the rigid body that bullet uses
+				std::unique_ptr<CMotionState> m_motionState{ nullptr }; ///< motion state implementation for this engine
+				Physics* m_physicsWorld; ///< the world this rigidbody belongs to
+				float m_mass{ 0.0f }; ///< the mass of this rigid body
+				bool m_isKinematic{ false }; ///< flag wether this body is kinematic or not
 		};
 }

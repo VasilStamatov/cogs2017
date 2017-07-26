@@ -1,7 +1,6 @@
 #include "../include/GLTexture2D.h"
-#include "../include/Utils.h"
+#include "../include/ResourceLoader.h"
 
-#include <SOIL2\SOIL2.h>
 #include <GL\glew.h>
 
 namespace cogs
@@ -10,22 +9,10 @@ namespace cogs
 		{
 				m_filePath = _filePath;
 
-				m_id = SOIL_load_OGL_texture(m_filePath.c_str(), SOIL_LOAD_AUTO, m_id,
-						SOIL_FLAG_POWER_OF_TWO
-						| SOIL_FLAG_MIPMAPS
-						//| SOIL_FLAG_TEXTURE_REPEATS
-						| SOIL_FLAG_MULTIPLY_ALPHA
-						| SOIL_FLAG_INVERT_Y);
-
-				if (m_id == 0)
+				if (!ResourceLoader::loadSOIL2Texture(m_filePath, &m_id))
 				{
-						printf("SOIL loading error: '%s'\n", SOIL_last_result());
+						throw std::runtime_error("Texture failed to load");
 				}
-
-				/*if (!loadTexture(m_filePath.c_str(), _alpha, &m_width, &m_height, &m_id))
-				{
-				throw std::runtime_error("Texture failed to load");
-								}*/
 		}
 
 		GLTexture2D::~GLTexture2D()
@@ -52,52 +39,38 @@ namespace cogs
 				//z,w represent the top right coordinates (or width and height of the uv)
 				//for single textures it's always 0,0, 1,1
 
-				switch (m_type)
-				{
-				case TextureType::SINGLE:
+				if (m_isSingle)
 				{
 						return glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
 				}
-				case TextureType::MULTIPLE:
-				{
-						//make sure the xTile isn't bigger than dims.x by using mod operator
-						int xTile = _index % m_tileDims.x;
-						int yTile = _index / m_tileDims.x;
 
-						glm::vec4 uvs;
-						uvs.x = (float)xTile / (float)m_tileDims.x;
-						uvs.y = (float)yTile / (float)m_tileDims.y;
-						uvs.z = 1.0f / (float)m_tileDims.x;
-						uvs.w = 1.0f / (float)m_tileDims.y;
-						return uvs;
-				}
-				default: break;
-				}
-				return glm::vec4(0.0f, 0.0f, 1.0f, 1.0f);
+				//make sure the xTile isn't bigger than dims.x by using mod operator
+				int xTile = _index % m_tileDims.x;
+				int yTile = _index / m_tileDims.x;
+
+				glm::vec4 uvs;
+				uvs.x = (float)xTile / (float)m_tileDims.x;
+				uvs.y = (float)yTile / (float)m_tileDims.y;
+				uvs.z = 1.0f / (float)m_tileDims.x;
+				uvs.w = 1.0f / (float)m_tileDims.y;
+				return uvs;
 		}
 
 		glm::vec2 GLTexture2D::getTexOffsets(int _index)
 		{
-				switch (m_type)
-				{
-				case TextureType::SINGLE:
+				if (m_isSingle)
 				{
 						return glm::vec2(0.0f, 0.0f);
 				}
-				case TextureType::MULTIPLE:
-				{
-						//make sure the xTile isn't bigger than dims.x by using mod operator
-						int xTile = _index % m_tileDims.x;
-						int yTile = _index / m_tileDims.x;
 
-						glm::vec2 texOffsets;
-						texOffsets.x = (float)xTile / (float)m_tileDims.x;
-						texOffsets.y = (float)yTile / (float)m_tileDims.y;
+				//make sure the xTile isn't bigger than dims.x by using mod operator
+				int xTile = _index % m_tileDims.x;
+				int yTile = _index / m_tileDims.x;
 
-						return texOffsets;
-				}
-				default: break;
-				}
-				return glm::vec2(0.0f, 0.0f);
+				glm::vec2 texOffsets;
+				texOffsets.x = (float)xTile / (float)m_tileDims.x;
+				texOffsets.y = (float)yTile / (float)m_tileDims.y;
+
+				return texOffsets;
 		}
 }

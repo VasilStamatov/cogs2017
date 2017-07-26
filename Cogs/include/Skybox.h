@@ -9,16 +9,12 @@ namespace cogs
 		class GLSLProgram;
 		class ResourceManager;
 
-		/**
-		* \brief Skybox class to handle creation of a skybox and its rendering
-		*/
 		class Skybox : public Object
 		{
 		public:
 				Skybox(ResourceManager* _rm, GLSLProgram* _shader, GLCubemapTexture* _cubemapTex, bool _isBox);
 				~Skybox();
 
-				/** \brief renders the skybox */
 				void render();
 
 		private:

@@ -24,13 +24,13 @@ namespace cogs
 				glGenVertexArrays(1, &m_VAO);
 
 				//generate the vertex buffer objects
-				glGenBuffers(BufferObjects::NUM_BUFFERS, m_VBOs);
+				glGenBuffers(static_cast<unsigned char>(BufferObjects::NUM_BUFFERS), m_VBOs);
 
 				//bind the vao and continue working on the vbos under it
 				glBindVertexArray(m_VAO);
 
 				//bind the position buffer
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::POSITION]);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::POSITION)]);
 
 				float vertices[] =
 				{ -0.5f,  0.5f, 0.0f,	 // top left corner
@@ -40,36 +40,36 @@ namespace cogs
 
 				glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-				glEnableVertexAttribArray(BufferObjects::POSITION);
-				glVertexAttribPointer(BufferObjects::POSITION, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glEnableVertexAttribArray(static_cast<unsigned char>(BufferObjects::POSITION));
+				glVertexAttribPointer(static_cast<unsigned char>(BufferObjects::POSITION), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 				unsigned int indices[] = { 0,1,2,			// first triangle (bottom left - top left - top right)
 																															0,2,3 }; // second triangle (bottom left - top right - bottom right)
 
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs[BufferObjects::INDEX]);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::INDEX)]);
 				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 				// bind the color buffer
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::COLOR]);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::COLOR)]);
 
-				glEnableVertexAttribArray(BufferObjects::COLOR);
-				glVertexAttribPointer(BufferObjects::COLOR, 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, nullptr);
-				glVertexAttribDivisor(BufferObjects::COLOR, 1);
+				glEnableVertexAttribArray(static_cast<unsigned char>(BufferObjects::COLOR));
+				glVertexAttribPointer(static_cast<unsigned char>(BufferObjects::COLOR), 4, GL_UNSIGNED_BYTE, GL_TRUE, 0, nullptr);
+				glVertexAttribDivisor(static_cast<unsigned char>(BufferObjects::COLOR), 1);
 
 				// bind the color buffer
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::SIZE]);
-				glEnableVertexAttribArray(BufferObjects::SIZE);
-				glVertexAttribPointer(BufferObjects::SIZE, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
-				glVertexAttribDivisor(BufferObjects::SIZE, 1);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::SIZE)]);
+				glEnableVertexAttribArray(static_cast<unsigned char>(BufferObjects::SIZE));
+				glVertexAttribPointer(static_cast<unsigned char>(BufferObjects::SIZE), 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glVertexAttribDivisor(static_cast<unsigned char>(BufferObjects::SIZE), 1);
 
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::WORLDMAT]);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::WORLDMAT)]);
 				// cannot upload mat4's all at once, so upload them as 4 vec4's
 				for (size_t i = 0; i < 4; i++)
 				{
 						//enable the channel of the current matrix row (4,5,6,7)
-						glEnableVertexAttribArray(BufferObjects::WORLDMAT + i);
+						glEnableVertexAttribArray(static_cast<unsigned char>(BufferObjects::WORLDMAT) + i);
 						//tell opengl how to read it
-						glVertexAttribPointer(BufferObjects::WORLDMAT + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+						glVertexAttribPointer(static_cast<unsigned char>(BufferObjects::WORLDMAT) + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
 								(const void*)(sizeof(float) * i * 4));
 
 						/** This function is what makes it per-instance data rather than per vertex
@@ -78,7 +78,7 @@ namespace cogs
 						* 1 means that this data is updated after 1 instance has been rendered
 						* by default it's 0 which makes it per-vertex and if it's over 1 than more than 1 instances will use this data
 						*/
-						glVertexAttribDivisor(BufferObjects::WORLDMAT + i, 1);
+						glVertexAttribDivisor(static_cast<unsigned char>(BufferObjects::WORLDMAT) + i, 1);
 				}
 
 				// unbind the vao after the setup is done
@@ -124,17 +124,17 @@ namespace cogs
 						instances.material->getShader()->uploadValue("view", currentCam->getViewMatrix());
 
 						//bind the per-instance buffers
-						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::COLOR]);
+						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::COLOR)]);
 						//upload the data
 						glBufferData(GL_ARRAY_BUFFER, sizeof(Color) * instances.color.size(), instances.color.data(), GL_DYNAMIC_DRAW);
 
 						//bind the per-instance buffers
-						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::SIZE]);
+						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::SIZE)]);
 						//upload the data
 						glBufferData(GL_ARRAY_BUFFER, sizeof(glm::vec2) * instances.size.size(), instances.size.data(), GL_DYNAMIC_DRAW);
 
 						//bind the per-instance buffers
-						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::WORLDMAT]);
+						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::WORLDMAT)]);
 						//upload the data
 						glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * instances.worldMat.size(), instances.worldMat.data(), GL_DYNAMIC_DRAW);
 
@@ -142,8 +142,6 @@ namespace cogs
 
 						instances.material->unbind();
 				}
-
-				//unbind the vao
 				glBindVertexArray(0);
 		}
 
@@ -168,9 +166,9 @@ namespace cogs
 
 				if (m_VBOs[0] != 0)
 				{
-						glDeleteBuffers(BufferObjects::NUM_BUFFERS, m_VBOs);
+						glDeleteBuffers(static_cast<unsigned char>(BufferObjects::NUM_BUFFERS), m_VBOs);
 
-						for (size_t i = 0; i < BufferObjects::NUM_BUFFERS; i++)
+						for (size_t i = 0; i < static_cast<unsigned char>(BufferObjects::NUM_BUFFERS); i++)
 						{
 								m_VBOs[i] = 0;
 						}

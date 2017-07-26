@@ -7,9 +7,6 @@ namespace cogs
 {
 		using HighResClock = std::chrono::high_resolution_clock;
 
-		/**
-		* Static class for random number generation
-		*/
 		class Random
 		{
 		public:

@@ -26,13 +26,13 @@ namespace cogs
 				glGenVertexArrays(1, &m_VAO);
 
 				//generate the vertex buffer objects
-				glGenBuffers(BufferObjects::NUM_BUFFERS, m_VBOs);
+				glGenBuffers(static_cast<unsigned char>(BufferObjects::NUM_BUFFERS), m_VBOs);
 
 				//bind the vao and continue working on the vbos under it
 				glBindVertexArray(m_VAO);
 
 				//bind the position buffer
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::POSITION]);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::POSITION)]);
 
 				float vertices[] =
 				{ -0.5f,  0.5f, 0.0f,	 // top left corner
@@ -47,10 +47,10 @@ namespace cogs
 				unsigned int indices[] = { 0,1,2,			// first triangle (bottom left - top left - top right)
 																															0,2,3 }; // second triangle (bottom left - top right - bottom right)
 
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs[BufferObjects::INDEX]);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::INDEX)]);
 				glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::INSTANCED_ATTRIBS]);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::INSTANCED_ATTRIBS)]);
 
 				glEnableVertexAttribArray(PARTICLE_WORLDNSIZE_ATTRIBUTE);
 				glVertexAttribPointer(PARTICLE_WORLDNSIZE_ATTRIBUTE, 4, GL_FLOAT, GL_FALSE, sizeof(InstanceAttributes),
@@ -165,7 +165,7 @@ namespace cogs
 						m_shader->uploadValue("texNumOfRows", instances.texNumOfRows);
 
 						//bind the per-instance buffers
-						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObjects::INSTANCED_ATTRIBS]);
+						glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObjects::INSTANCED_ATTRIBS)]);
 						//upload the data
 						glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(InstanceAttributes) * instances.instanceAttribs.size(), instances.instanceAttribs.data());
 
@@ -198,9 +198,9 @@ namespace cogs
 
 				if (m_VBOs[0] != 0)
 				{
-						glDeleteBuffers(BufferObjects::NUM_BUFFERS, m_VBOs);
+						glDeleteBuffers(static_cast<unsigned char>(BufferObjects::NUM_BUFFERS), m_VBOs);
 
-						for (size_t i = 0; i < BufferObjects::NUM_BUFFERS; i++)
+						for (size_t i = 0; i < static_cast<unsigned char>(BufferObjects::NUM_BUFFERS); i++)
 						{
 								m_VBOs[i] = 0;
 						}

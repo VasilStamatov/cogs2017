@@ -8,39 +8,30 @@ namespace cogs
 {
 		class Transform;
 
-		/**
-		* \brief The types of light supported
-		*/
-		enum class LightType
+		enum class LightType : unsigned char
 		{
 				DIRECTIONAL,
 				POINT,
 				SPOT
 		};
 
-		/**
-		* \brief The attenuation of lights
-		*/
 		struct Attenuation
 		{
 				Attenuation() {}
 				Attenuation(float _constant, float _linear, float _quadratic) :
 						m_constant(_constant), m_linear(_linear), m_quadratic(_quadratic) {}
+
 				float m_constant{ 0.0f };
 				float m_linear{ 0.0f };
 				float m_quadratic{ 0.0f };
 		};
 
-		/**
-		* \brief Light component
-		*/
 		class Light : public Component
 		{
 		public:
 				Light();
 				~Light();
 
-				//attribute setters
 				void setLightType(const LightType& _lightType) { m_lightType = _lightType; }
 				void setAttenuation(const Attenuation& _attenuation) { m_attenuation = _attenuation; }
 				void setColor(const glm::vec3& _color) { m_lightColor = _color; }
@@ -50,9 +41,8 @@ namespace cogs
 				void setCutOff(float _cutOff) { m_cutOff = _cutOff; }
 				void setOuterCutOff(float _outerCutOff) { m_outerCutOff = _outerCutOff; }
 
-				//attribute getters
-				const LightType& getLightType()		   const { return m_lightType; }
-				const Attenuation& getAttenuation()	const { return m_attenuation; }
+				const LightType& getLightType()		   const noexcept { return m_lightType; }
+				const Attenuation& getAttenuation()	const noexcept { return m_attenuation; }
 				const glm::vec3& getColor()  const noexcept { return m_lightColor; }
 				float getAmbientIntensity()  const noexcept { return m_ambientIntensity; }
 				float getDiffuseIntensity()  const noexcept { return m_diffuseIntensity; }
@@ -62,19 +52,18 @@ namespace cogs
 				glm::vec3 getPosition();
 				glm::vec3 getDirection();
 
-				//getter of all the lights created
 				static std::vector<Light*> getAllLights() { return s_allLights; }
 
 		private:
-				static std::vector<Light*> s_allLights; ///< static container of all the lights
+				static std::vector<Light*> s_allLights;
 
-				LightType			m_lightType{ LightType::POINT }; ///< the type of light
-				Attenuation m_attenuation; ///< attenuation of the light
-				glm::vec3			m_lightColor{ 1.0f, 1.0f, 1.0f }; ///< color of the light
-				float					  m_ambientIntensity{ 1.0f }; ///< ambient intensity of the light
-				float					  m_diffuseIntensity{ 1.0f };  ///< diffuse intensity of the light
-				float					  m_specularIntensity{ 1.0f }; ///< specular intensity of the light
-				float					  m_cutOff{ 0.0f }; ///< inner cutoff of specular type lights
-				float					  m_outerCutOff{ 0.0f }; ///< outer cutoff of specular type lights
+				glm::vec3			m_lightColor{ 1.0f, 1.0f, 1.0f };
+				Attenuation m_attenuation;
+				float					  m_ambientIntensity{ 1.0f };
+				float					  m_diffuseIntensity{ 1.0f };
+				float					  m_specularIntensity{ 1.0f };
+				float					  m_cutOff{ 0.0f };
+				float					  m_outerCutOff{ 0.0f };
+				LightType			m_lightType{ LightType::POINT };
 		};
 }

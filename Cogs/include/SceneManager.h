@@ -21,8 +21,8 @@ namespace cogs
 				Scene* getCurrent();
 
 		private:
-				Application* m_app{ nullptr };
 				std::vector<std::unique_ptr<Scene>> m_scenes;
+				Application* m_app{ nullptr };
 				int m_currentSceneID{ -1 };
 		};
 }

@@ -11,21 +11,6 @@ namespace cogs
 {
 		class GUI
 		{
-		private:
-				static CEGUI::OpenGL3Renderer* m_renderer;
-				static CEGUI::GUIContext* m_context;
-				static CEGUI::Window* m_root;
-				static HRTimer m_timer;
-				static std::string m_schemeName;
-				static bool m_freed;
-
-		private:
-				GUI();
-				~GUI();
-
-				static CEGUI::Key::Scan SDLKeyToCEGUIKey(SDL_Keycode _key);
-				static CEGUI::MouseButton SDLButtonToCEGUIButton(Uint8 _sdlButton);
-
 		public:
 				//initialize the gui
 				static void init(const std::string& _resourceDirectory);
@@ -58,10 +43,24 @@ namespace cogs
 				//function to be called whenever the window is resized
 				static void notifyWindowResize(float _screenWidth, float _screenHeight);
 
-
 				static CEGUI::OpenGL3Renderer* getRenderer() noexcept { return m_renderer; }
 				static const CEGUI::GUIContext* getContext() noexcept { return m_context; }
 				static const std::string& getSchemeName()			 noexcept { return m_schemeName; }
 				static bool isFreed()																							 noexcept { return m_freed; }
+
+		private:
+				GUI();
+				~GUI();
+
+				static CEGUI::Key::Scan SDLKeyToCEGUIKey(SDL_Keycode _key);
+				static CEGUI::MouseButton SDLButtonToCEGUIButton(Uint8 _sdlButton);
+
+		private:
+				static std::string m_schemeName;
+				static HRTimer m_timer;
+				static CEGUI::OpenGL3Renderer* m_renderer;
+				static CEGUI::GUIContext* m_context;
+				static CEGUI::Window* m_root;
+				static bool m_freed;
 		};
 }

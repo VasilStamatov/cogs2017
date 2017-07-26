@@ -34,6 +34,9 @@ namespace cogs
 				//since this is going to be used polymorphically the destructor needs to have the virtual keyword
 				virtual ~Component() { m_entity = nullptr; }
 
+				Component(const Component& _other) = delete;
+				Component& operator=(const Component& _rhs) = delete;
+
 				Entity* getEntity() const noexcept { return m_entity; }
 
 		protected:

@@ -95,21 +95,18 @@ namespace cogs
 						Entity* _other);
 
 		private:
-				EntityManager* m_manager;
-				Transform* m_transform;
-				/* The Entity's tag */
 				std::string m_tag{ "Default" };
-				/* active flag of the entity */
-				bool m_isActive{ true };
-				bool m_destroyOnLoad{ true };
-				/* An entity is also composed of numerous components
-				* Therefore the components will be stored in an std::vector as shared pointers to allow polymorphism */
-				std::vector<std::unique_ptr<Component>> m_components;
 
+				std::vector<std::unique_ptr<Component>> m_components;
+				/* An array to get a component with specific ID */
+				std::array<Component*, MAX_COMPONENTS> m_componentArray;
 				/* A bitset to check the existance of a component with a specific ID */
 				std::bitset<MAX_COMPONENTS> m_componentBitset;
 
-				/* An array to get a component with specific ID */
-				std::array<Component*, MAX_COMPONENTS> m_componentArray;
+				EntityManager* m_manager;
+				Transform* m_transform;
+
+				bool m_isActive{ true };
+				bool m_destroyOnLoad{ true };
 		};
 }

@@ -21,7 +21,7 @@ namespace cogs
 		{
 				m_running = true;
 				//initialize SDL and OpenGL and create the window
-				m_window.create(_windowName, _windowWidth, _windowHeight, WindowCreationFlags::RESIZABLE);
+				m_window.create(_windowName, _windowWidth, _windowHeight, WindowFlag::RESIZABLE);
 
 				//initialize opengl renderers if needed
 				m_renderer2D.init();

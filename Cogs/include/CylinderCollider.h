@@ -4,9 +4,6 @@
 
 namespace cogs
 {
-		/**
-		* \brief Constructor to create the btCylinderShape
-		*/
 		class CylinderCollider : public Collider
 		{
 		public:
@@ -19,8 +16,5 @@ namespace cogs
 						m_collisionShape = std::make_unique<btCylinderShape>(btVector3(_halfExtents.x, _halfExtents.y, _halfExtents.z));
 				}
 				virtual ~CylinderCollider() {}
-
-		private:
-
 		};
 }

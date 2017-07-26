@@ -121,6 +121,12 @@ namespace cogs
 		{
 				m_debugDrawMode = DebugDrawModes(_debugMode);
 		}
+
+		int BulletDebugRenderer::getDebugMode() const
+		{
+				return m_debugDrawMode;
+		}
+
 		void BulletDebugRenderer::end()
 		{
 				//bind the vbo

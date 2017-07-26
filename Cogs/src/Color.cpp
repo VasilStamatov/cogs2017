@@ -2,26 +2,6 @@
 
 namespace cogs
 {
-		/**
-		* A bunch of premade colors for ease of access
-		* codes from http://htmlcolorcodes.com/
-		*/
-		Color Color::white = Color(255, 255, 255, 255);
-		Color Color::black = Color(0, 0, 0, 255);
-		Color Color::red = Color(255, 0, 0, 255);
-		Color Color::green = Color(0, 128, 0, 255);
-		Color Color::blue = Color(0, 0, 255, 255);
-		Color Color::silver = Color(192, 192, 192, 255);
-		Color Color::gray = Color(128, 128, 128, 255);
-		Color Color::yellow = Color(255, 255, 0, 255);
-		Color Color::olive = Color(128, 128, 255, 255);
-		Color Color::lime = Color(0, 255, 0, 255);
-		Color Color::aqua = Color(0, 255, 255, 255);
-		Color Color::teal = Color(0, 128, 128, 255);
-		Color Color::navy = Color(0, 0, 128, 255);
-		Color Color::fuchsia = Color(255, 0, 255, 255);
-		Color Color::purple = Color(128, 0, 128, 255);
-
 		Color::Color(byte _r, byte _g, byte _b, byte _a) : r(_r), g(_g), b(_b), a(_a) { }
 
 		Color::Color(byte _rgb, byte _alpha) : r(_rgb), g(_rgb), b(_rgb), a(_alpha) { }
@@ -29,8 +9,81 @@ namespace cogs
 		Color::Color(const Color & _other) : r(_other.r), g(_other.g), b(_other.b), a(_other.a)
 		{
 		}
+
+		Color & Color::operator=(const Color & _rhs)
+		{
+				r = _rhs.r;
+				g = _rhs.g;
+				b = _rhs.b;
+
+				return *this;
+		}
+
 		bool Color::operator==(const Color & _rhs) const
 		{
 				return (r == _rhs.r && g == _rhs.g && b == _rhs.b && a == _rhs.a);
+		}
+
+		/* codes from http://htmlcolorcodes.com/ */
+
+		Color Color::getWhite() noexcept
+		{
+				return Color(255, 255, 255, 255);
+		}
+		Color Color::getBlack() noexcept
+		{
+				return Color(0, 0, 0, 255);
+		}
+		Color Color::getRed() noexcept
+		{
+				return Color(255, 0, 0, 255);
+		}
+		Color Color::getGreen() noexcept
+		{
+				return Color(0, 128, 0, 255);
+		}
+		Color Color::getBlue() noexcept
+		{
+				return Color(0, 0, 255, 255);
+		}
+		Color Color::getSilver() noexcept
+		{
+				return Color(192, 192, 192, 255);
+		}
+		Color Color::getGray() noexcept
+		{
+				return Color(128, 128, 128, 255);
+		}
+		Color Color::getYellow() noexcept
+		{
+				return Color(255, 255, 0, 255);
+		}
+		Color Color::getOlive() noexcept
+		{
+				return Color(128, 128, 255, 255);
+		}
+		Color Color::getLime() noexcept
+		{
+				return Color(0, 255, 0, 255);
+		}
+		Color Color::getAqua() noexcept
+		{
+				return Color(0, 255, 255, 255);
+		}
+		Color Color::getTeal() noexcept
+		{
+				return Color(0, 128, 128, 255);
+		}
+		Color Color::getNavy() noexcept
+		{
+				return Color(0, 0, 128, 255);
+		}
+		Color Color::getFuchsia() noexcept
+		{
+				return Color(255, 0, 255, 255);
+		}
+		Color Color::getPurple() noexcept
+		{
+				return Color(128, 0, 128, 255);
 		}
 }

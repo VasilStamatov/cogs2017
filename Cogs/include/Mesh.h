@@ -12,7 +12,7 @@ namespace cogs
 {
 		class Material;
 		class ResourceManager;
-		//Structure of submeshes the mesh is composed of
+
 		struct SubMesh
 		{
 				unsigned int m_baseVertex{ 0 };
@@ -20,22 +20,28 @@ namespace cogs
 				unsigned int m_numIndices{ 0 };
 				unsigned int m_materialIndex{ 9999 };
 		};
-		/* Structure to represent the bounding sphere around the mesh (for culling) */
+
+		struct MeshData
+		{
+				std::vector<glm::vec3> m_positions;
+				std::vector<glm::vec2> m_uvs;
+				std::vector<glm::vec3> m_normals;
+				std::vector<glm::vec3> m_tangents;
+				std::vector<unsigned int> m_indices;
+		};
+
 		struct MeshBoundingSphere
 		{
 				glm::vec3 m_center;
 				float m_radius;
 		};
-		/* Structure to represent the bounding box around the mesh (for culling) */
+
 		struct MeshBoundingBox
 		{
 				glm::vec3 m_min;
 				glm::vec3 m_max;
 		};
 
-		/**
-		* Mesh class, for storing mesh data and handling rendering
-		*/
 		class Mesh : public Object
 		{
 				friend class Renderer3D;
@@ -44,23 +50,11 @@ namespace cogs
 				Mesh(const std::string& _filePath, ResourceManager* _rm);
 				~Mesh();
 
-				/**
-				* \brief render this mesh
-				*/
 				void render() const;
 
-				/**
-				* \brief dispose of the vao and vbo's
-				*/
 				void dispose();
 
-				/**
-				* \brief Checks if the mesh is valid
-				*/
-				bool isValid(const std::vector<glm::vec3>& _positions,
-						const std::vector<glm::vec2>& _uvs,
-						const std::vector<glm::vec3>& _normals,
-						const std::vector<glm::vec3>& _tangents) const;
+				bool isValid(const MeshData& _meshData) const;
 
 				inline const MeshBoundingSphere& getSphereBounds()  const noexcept { return m_boundingSphere; }
 				inline const MeshBoundingBox& getBoxBounds()						  const noexcept { return m_boundingBox; }
@@ -68,34 +62,13 @@ namespace cogs
 				inline const std::vector<Material*>& getMaterials()	const noexcept { return m_materials; }
 
 		private:
-				/* internal utility functions */
 				void calcBounds(const std::vector<glm::vec3>& _positions);
+				void calcNormals(MeshData& _meshData);
+				void calcTangents(MeshData& _meshData);
+				void finalize(MeshData& _meshData);
+				void createBuffers(MeshData& _meshData);
 
-				void calcNormals(const std::vector<glm::vec3>& _positions,
-						std::vector<glm::vec3>& _normals,
-						std::vector<unsigned int>& _indices);
-
-				void calcTangents(const std::vector<glm::vec3>& _positions,
-						std::vector<glm::vec2>& _uvs,
-						std::vector<glm::vec3>& _normals,
-						std::vector<glm::vec3>& _tangents,
-						std::vector<unsigned int>& _indices);
-
-				void finalize(const std::vector<glm::vec3>& _positions,
-						std::vector<glm::vec2>& _uvs,
-						std::vector<glm::vec3>& _normals,
-						std::vector<glm::vec3>& _tangents,
-						std::vector<unsigned int>& _indices);
-
-				void createBuffers(const std::vector<glm::vec3>& _positions,
-						std::vector<glm::vec2>& _uvs,
-						std::vector<glm::vec3>& _normals,
-						std::vector<glm::vec3>& _tangents,
-						std::vector<unsigned int>& _indices);
-				
-		private:
-				//enum for all the buffer objects
-				enum BufferObject
+				enum class BufferObject : unsigned char
 				{
 						POSITION,
 						TEXCOORD,
@@ -108,14 +81,15 @@ namespace cogs
 						NUM_BUFFERS
 				};
 
+		private:
+				std::vector<SubMesh> m_subMeshes;
+				std::vector<Material*> m_materials;
+
 				MeshBoundingBox m_boundingBox;
 				MeshBoundingSphere m_boundingSphere;
 
 				unsigned int m_numIndices{ 0 };
-				unsigned int m_VAO{ 0 }; ///< the vao of this mesh
-				unsigned int m_VBOs[BufferObject::NUM_BUFFERS] = { 0 }; ///< the vbo's of this mesh
-
-				std::vector<SubMesh> m_subMeshes;
-				std::vector<Material*> m_materials;
+				unsigned int m_VAO{ 0 };
+				unsigned int m_VBOs[static_cast<unsigned char>(BufferObject::NUM_BUFFERS)] = { 0 };
 		};
 }

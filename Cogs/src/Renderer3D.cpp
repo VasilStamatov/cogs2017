@@ -72,7 +72,7 @@ namespace cogs
 						const std::vector<Material*>& materials = instances.mesh->getMaterials();
 
 						//bind the per-instance buffers
-						glBindBuffer(GL_ARRAY_BUFFER, instances.mesh->m_VBOs[instances.mesh->BufferObject::WORLDMAT]);
+						glBindBuffer(GL_ARRAY_BUFFER, instances.mesh->m_VBOs[static_cast<unsigned char>(Mesh::BufferObject::WORLDMAT)]);
 						//upload the data
 						glBufferData(GL_ARRAY_BUFFER, sizeof(glm::mat4) * instances.worldmats.size(), instances.worldmats.data(), GL_DYNAMIC_DRAW);
 

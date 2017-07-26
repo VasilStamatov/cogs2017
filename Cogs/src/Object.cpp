@@ -20,7 +20,7 @@ namespace cogs
 		{
 				return m_name;
 		}
-		bool Object::isAlive()
+		bool Object::isAlive() const noexcept
 		{
 				return m_alive;
 		}

@@ -5,11 +5,20 @@
 
 namespace cogs
 {
-		/**
-		* \brief Defines a frustum, useful for culling and view detection
-		*/
 		class Frustum
 		{
+				enum class Planes : unsigned int
+				{
+						Right,
+						Left,
+						Bottom,
+						Top,
+						Far,
+						Near,
+
+						PlanesCount
+				};
+
 				struct Plane
 				{
 						glm::vec3 normal;
@@ -21,44 +30,9 @@ namespace cogs
 						float distance(const glm::vec3& _p) const;
 				};
 
-				/*enum Planes
-				{
-						RIGHT,
-						LEFT,
-						BOTTOM,
-						TOP,
-						FAR,
-						NEAR
-				};*/
-
-		private:
-				float m_fov{ 0 }; ///< Vertical field of view in radians
-				float m_aspectRatio{ 0.0f }; ///< Screen aspect ratio
-				float m_znear{ 0.0f }; ///< Near clipping plane
-				float m_zfar{ 0.0f }; ///< Far clipping plane
-				float m_nearHeight{ 0.0f }; ///< Near plane height
-				float m_nearWidth{ 0.0f }; ///< Near plane Width
-				float m_farHeight{ 0.0f }; ///< Far plane height
-				float m_farWidth{ 0.0f }; ///< Far plane Width
-
-				glm::vec3 m_nearCenter;
-				glm::vec3 m_farCenter;
-
-				glm::vec3 m_nearTopLeft;
-				glm::vec3 m_nearBottomLeft;
-				glm::vec3 m_nearTopRight;
-				glm::vec3 m_nearBottomRight;
-
-				glm::vec3 m_farTopLeft;
-				glm::vec3 m_farBottomLeft;
-				glm::vec3 m_farTopRight;
-				glm::vec3 m_farBottomRight;
-
-				Plane m_planes[6] = {}; ///< The actual frustum data
-
 		public:
-				Frustum();
-				~Frustum();
+				Frustum() {}
+				~Frustum() {}
 
 				/**
 				* \brief Sets internal camera properties. Needed for update()
@@ -77,19 +51,32 @@ namespace cogs
 						const glm::vec3& _right,
 						const glm::vec3& _up);
 
-				/**
-				* \brief Checks if a point is in the frustum
-				* \param[in] _pos - The position of the point
-				* \return true if it is in the frustum
-				*/
 				bool pointInFrustum(const glm::vec3& _pos) const;
-
-				/**
-				* \brief Checks if a sphere is in the frustum
-				* \param[in] _pos - Center position of the sphere
-				* \param[in] _radius - Radius of the sphere
-				* \return true if it is in the frustum
-				*/
 				bool sphereInFrustum(const glm::vec3& _pos, float _radius) const;
+
+		private:
+				glm::vec3 m_nearCenter;
+				glm::vec3 m_farCenter;
+
+				glm::vec3 m_nearTopLeft;
+				glm::vec3 m_nearBottomLeft;
+				glm::vec3 m_nearTopRight;
+				glm::vec3 m_nearBottomRight;
+
+				glm::vec3 m_farTopLeft;
+				glm::vec3 m_farBottomLeft;
+				glm::vec3 m_farTopRight;
+				glm::vec3 m_farBottomRight;
+
+				Plane m_planes[static_cast<unsigned int>(Planes::PlanesCount)];
+				
+				float m_fov{ 0 };
+				float m_aspectRatio{ 0.0f };
+				float m_znear{ 0.0f };
+				float m_zfar{ 0.0f };
+				float m_nearHeight{ 0.0f };
+				float m_nearWidth{ 0.0f };
+				float m_farHeight{ 0.0f };
+				float m_farWidth{ 0.0f };
 		};
 }

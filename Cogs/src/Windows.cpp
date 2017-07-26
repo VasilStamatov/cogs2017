@@ -10,7 +10,7 @@ namespace cogs
 		int Window::m_height{ 0 };
 
 		int Window::create(const std::string& _windowName, int _screenWidth,
-				int _screenHeight, WindowCreationFlags _windowFlags)
+				int _screenHeight, WindowFlag _windowFlags)
 		{
 				initSDL();
 
@@ -18,42 +18,39 @@ namespace cogs
 				m_title = _windowName;
 				m_width = _screenWidth;
 				m_height = _screenHeight;
-				//if any of the bitwise operations aren't 0, then it's true
-				if (!_windowFlags == WindowCreationFlags::NONE)
+
+				switch (_windowFlags)
 				{
-						if (_windowFlags & WindowCreationFlags::INVISIBLE)
-						{
-								flags |= SDL_WINDOW_HIDDEN;
-						}
-						if (_windowFlags & WindowCreationFlags::FULLSCREEN)
-						{
-								flags |= SDL_WINDOW_FULLSCREEN;
-						}
-						if (_windowFlags & WindowCreationFlags::BORDERLESS)
-						{
-								flags |= SDL_WINDOW_BORDERLESS;
-						}
-						if (_windowFlags & WindowCreationFlags::FULLSCREEN_DESKTOP)
-						{
-								flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
-						}
-						if (_windowFlags & WindowCreationFlags::INPUT_GRABBED)
-						{
-								flags |= SDL_WINDOW_INPUT_GRABBED;
-						}
-						if (_windowFlags & WindowCreationFlags::MAXIMIZED)
-						{
-								flags |= SDL_WINDOW_MAXIMIZED;
-						}
-						if (_windowFlags & WindowCreationFlags::MINIMIZED)
-						{
-								flags |= SDL_WINDOW_MINIMIZED;
-						}
-						if (_windowFlags & WindowCreationFlags::RESIZABLE)
-						{
-								flags |= SDL_WINDOW_RESIZABLE;
-						}
+				case cogs::WindowFlag::NONE:
+						break;
+				case cogs::WindowFlag::INVISIBLE:
+						flags |= SDL_WINDOW_HIDDEN;
+						break;
+				case cogs::WindowFlag::FULLSCREEN:
+						flags |= SDL_WINDOW_FULLSCREEN;
+						break;
+				case cogs::WindowFlag::FULLSCREEN_DESKTOP:
+						flags |= SDL_WINDOW_FULLSCREEN_DESKTOP;
+						break;
+				case cogs::WindowFlag::BORDERLESS:
+						flags |= SDL_WINDOW_BORDERLESS;
+						break;
+				case cogs::WindowFlag::RESIZABLE:
+						flags |= SDL_WINDOW_RESIZABLE;
+						break;
+				case cogs::WindowFlag::MINIMIZED:
+						flags |= SDL_WINDOW_MINIMIZED;
+						break;
+				case cogs::WindowFlag::MAXIMIZED:
+						flags |= SDL_WINDOW_MAXIMIZED;
+						break;
+				case cogs::WindowFlag::INPUT_GRABBED:
+						flags |= SDL_WINDOW_INPUT_GRABBED;
+						break;
+				default:
+						break;
 				}
+
 				//Create an SDL window
 				m_sdlWindow = SDL_CreateWindow(m_title.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, m_width, m_height, flags);
 

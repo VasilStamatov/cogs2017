@@ -39,8 +39,8 @@ namespace cogs
 
 				void	exitApplication();
 		private:
-				Application* m_app{ nullptr };
 				std::string m_sceneName{ "DefaultSceneName" };
+				Application* m_app{ nullptr };
 				unsigned int m_sceneID{ 0 };
 		};
 }

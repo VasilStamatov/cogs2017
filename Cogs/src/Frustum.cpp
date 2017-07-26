@@ -3,12 +3,38 @@
 
 namespace cogs
 {
-		Frustum::Frustum()
+		void Frustum::Plane::setNormalAndPoint(const glm::vec3 & _normal, const glm::vec3 & _point)
 		{
+				normal = glm::normalize(_normal);
+				d = -(glm::dot(normal, _point));
 		}
-		Frustum::~Frustum()
+
+		void Frustum::Plane::set3Points(const glm::vec3 & _v1, const glm::vec3 & _v2, const glm::vec3 & _v3)
 		{
+				glm::vec3 aux1{ 0.0f }, aux2{ 0.0f };
+
+				aux1 = _v1 - _v2;
+				aux2 = _v3 - _v2;
+
+				normal = glm::cross(aux2, aux1);
+				normal = glm::normalize(normal);
+
+				d = -(glm::dot(normal, _v2));
 		}
+
+		void Frustum::Plane::setCoefficients(float _a, float _b, float _c, float _d)
+		{
+				normal = glm::vec3(_a, _b, _c);
+				float l = glm::length(normal);
+				normal = glm::normalize(normal);
+				d = _d / l;
+		}
+
+		float Frustum::Plane::distance(const glm::vec3 & _p) const
+		{
+				return (glm::dot(normal, _p) + d);
+		}
+
 		void Frustum::setCamInternals(float _fov, float _aspectRatio, float _znear, float _zfar)
 		{
 				//Camera info
@@ -46,12 +72,12 @@ namespace cogs
 				// compute the six planes
 				// the function set3Points assumes that the points
 				// are given in counter clockwise order
-				m_planes[3].set3Points(m_nearTopRight, m_nearTopLeft, m_farTopLeft);
-				m_planes[2].set3Points(m_nearBottomLeft, m_nearBottomRight, m_farBottomRight);
-				m_planes[1].set3Points(m_nearTopLeft, m_nearBottomLeft, m_farBottomLeft);
-				m_planes[0].set3Points(m_nearBottomRight, m_nearTopRight, m_farBottomRight);
-				m_planes[5].setNormalAndPoint(_forward, m_nearCenter);
-				m_planes[4].setNormalAndPoint(-_forward, m_farCenter);
+				m_planes[static_cast<unsigned int>(Planes::Top)].set3Points(m_nearTopRight, m_nearTopLeft, m_farTopLeft);
+				m_planes[static_cast<unsigned int>(Planes::Bottom)].set3Points(m_nearBottomLeft, m_nearBottomRight, m_farBottomRight);
+				m_planes[static_cast<unsigned int>(Planes::Left)].set3Points(m_nearTopLeft, m_nearBottomLeft, m_farBottomLeft);
+				m_planes[static_cast<unsigned int>(Planes::Right)].set3Points(m_nearBottomRight, m_nearTopRight, m_farBottomRight);
+				m_planes[static_cast<unsigned int>(Planes::Near)].setNormalAndPoint(_forward, m_nearCenter);
+				m_planes[static_cast<unsigned int>(Planes::Far)].setNormalAndPoint(-_forward, m_farCenter);
 
 				////Define near plane
 				//m_planes[NEAR].setNormalAndPoint(_forward, m_nearCenter);
@@ -104,37 +130,5 @@ namespace cogs
 						}
 				}
 				return true;
-		}
-
-		void Frustum::Plane::setNormalAndPoint(const glm::vec3 & _normal, const glm::vec3 & _point)
-		{
-				normal = glm::normalize(_normal);
-				d = -(glm::dot(normal, _point));
-		}
-
-		void Frustum::Plane::set3Points(const glm::vec3 & _v1, const glm::vec3 & _v2, const glm::vec3 & _v3)
-		{
-				glm::vec3 aux1{ 0.0f }, aux2{ 0.0f };
-
-				aux1 = _v1 - _v2;
-				aux2 = _v3 - _v2;
-
-				normal = glm::cross(aux2, aux1);
-				normal = glm::normalize(normal);
-
-				d = -(glm::dot(normal, _v2));
-		}
-
-		void Frustum::Plane::setCoefficients(float _a, float _b, float _c, float _d)
-		{
-				normal = glm::vec3(_a, _b, _c);
-				float l = glm::length(normal);
-				normal = glm::normalize(normal);
-				d = _d / l;
-		}
-
-		float Frustum::Plane::distance(const glm::vec3 & _p) const
-		{
-				return (glm::dot(normal, _p) + d);
 		}
 }

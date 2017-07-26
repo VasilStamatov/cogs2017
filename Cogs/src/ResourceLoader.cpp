@@ -1,30 +1,18 @@
-#include "../include/Utils.h"
+#include "../include/ResourceLoader.h"
 
 #include "../include/ResourceManager.h"
+#include "../include/Mesh.h"
 #include "../include/Material.h"
 
-#include <SDL\SDL_timer.h>
 #include <SOIL2\SOIL2.h>
-
 #include <GL\glew.h>
-
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
 namespace cogs
 {
-		float getTime()
-		{
-				return static_cast<float>(SDL_GetTicks());
-		}
-
-		void sleep(const float _millis)
-		{
-				SDL_Delay(static_cast<Uint32>(_millis));
-		}
-
-		bool loadTexture(const char * _filePath, bool _alpha, int * _width, int * _height, unsigned int * _id)
+		bool ResourceLoader::loadTexture(const char * _filePath, bool _alpha, int * _width, int * _height, unsigned int * _id)
 		{
 				unsigned char* image = SOIL_load_image(_filePath, _width, _height, 0, _alpha ? SOIL_LOAD_RGBA : SOIL_LOAD_RGB);
 
@@ -58,7 +46,24 @@ namespace cogs
 				return true;
 		}
 
-		bool loadCubemap(const std::vector<std::string>& _fileNames, int * _width, int * _height, unsigned int * _id)
+		bool ResourceLoader::loadSOIL2Texture(const std::string & _filePath, unsigned int * _id)
+		{
+				*_id = SOIL_load_OGL_texture(_filePath.c_str(), SOIL_LOAD_AUTO, *_id,
+						SOIL_FLAG_POWER_OF_TWO
+						| SOIL_FLAG_MIPMAPS
+						//| SOIL_FLAG_TEXTURE_REPEATS
+						| SOIL_FLAG_MULTIPLY_ALPHA
+						| SOIL_FLAG_INVERT_Y);
+
+				if (*_id == 0)
+				{
+						printf("SOIL loading error: '%s'\n", SOIL_last_result());
+						return false;
+				}
+				return true;
+		}
+
+		bool ResourceLoader::loadCubemap(const std::vector<std::string>& _fileNames, int * _width, int * _height, unsigned int * _id)
 		{
 				//Generate the openGL handle for the cubemap
 				glGenTextures(1, _id);
@@ -71,6 +76,7 @@ namespace cogs
 						unsigned char* image = SOIL_load_image(_fileNames.at(i).c_str(), _width, _height, 0, SOIL_LOAD_RGB);
 						if (image == nullptr)
 						{
+								printf("SOIL loading error: '%s'\n", SOIL_last_result());
 								return false;
 						}
 						glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, *_width, *_height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
@@ -87,15 +93,30 @@ namespace cogs
 				return true;
 		}
 
-		void loadMesh(ResourceManager* _rm,
-				const std::string& _filePath,
-				std::vector<SubMesh>& _subMeshes,
-				std::vector<glm::vec3>& _positions,
-				std::vector<glm::vec2>& _uvs,
-				std::vector<glm::vec3>& _normals,
-				std::vector<glm::vec3>& _tangents,
-				std::vector<unsigned int>& _indices,
-				std::vector<Material*>& _materials)
+		bool ResourceLoader::loadSOIL2Cubemap(const std::vector<std::string>& _fileNames, unsigned int * _id)
+		{
+				*_id = SOIL_load_OGL_cubemap
+				(
+						_fileNames.at(0).c_str(),
+						_fileNames.at(1).c_str(),
+						_fileNames.at(2).c_str(),
+						_fileNames.at(3).c_str(),
+						_fileNames.at(4).c_str(),
+						_fileNames.at(5).c_str(),
+						SOIL_LOAD_AUTO,
+						*_id,
+						SOIL_FLAG_MIPMAPS
+				);
+
+				if (*_id == 0)
+				{
+						printf("SOIL loading error: '%s'\n", SOIL_last_result());
+						return false;
+				}
+				return true;
+		}
+
+		void ResourceLoader::loadMesh(ResourceManager * _rm, const std::string & _filePath, std::vector<SubMesh>& _subMeshes, std::vector<Material*>& _materials, MeshData & _meshData)
 		{
 				Assimp::Importer importer;
 
@@ -131,11 +152,11 @@ namespace cogs
 						numIndices += _subMeshes.at(i).m_numIndices;
 				}
 
-				_positions.reserve(numVertices);
-				_uvs.reserve(numVertices);
-				_normals.reserve(numVertices);
-				_tangents.reserve(numVertices);
-				_indices.reserve(numIndices);
+				_meshData.m_positions.reserve(numVertices);
+				_meshData.m_uvs.reserve(numVertices);
+				_meshData.m_normals.reserve(numVertices);
+				_meshData.m_tangents.reserve(numVertices);
+				_meshData.m_indices.reserve(numIndices);
 
 				const aiVector3D aiZeroVector(0.0f, 0.0f, 0.0f);
 
@@ -152,10 +173,10 @@ namespace cogs
 								const aiVector3D uv = paiMesh->HasTextureCoords(0) ? paiMesh->mTextureCoords[0][currVert] : aiZeroVector;
 								const aiVector3D tangent = paiMesh->mTangents[currVert];
 
-								_positions.push_back(glm::vec3(pos.x, pos.y, pos.z));
-								_uvs.push_back(glm::vec2(uv.x, uv.y));
-								_normals.push_back(glm::vec3(normal.x, normal.y, normal.z));
-								_tangents.push_back(glm::vec3(tangent.x, tangent.y, tangent.z));
+								_meshData.m_positions.push_back(glm::vec3(pos.x, pos.y, pos.z));
+								_meshData.m_uvs.push_back(glm::vec2(uv.x, uv.y));
+								_meshData.m_normals.push_back(glm::vec3(normal.x, normal.y, normal.z));
+								_meshData.m_tangents.push_back(glm::vec3(tangent.x, tangent.y, tangent.z));
 						}
 
 						//load all the indices for indexed rendering
@@ -163,9 +184,9 @@ namespace cogs
 						{
 								const aiFace& face = paiMesh->mFaces[currFace];
 								assert(face.mNumIndices == 3);
-								_indices.push_back(face.mIndices[0]);
-								_indices.push_back(face.mIndices[1]);
-								_indices.push_back(face.mIndices[2]);
+								_meshData.m_indices.push_back(face.mIndices[0]);
+								_meshData.m_indices.push_back(face.mIndices[1]);
+								_meshData.m_indices.push_back(face.mIndices[2]);
 						}
 				}
 

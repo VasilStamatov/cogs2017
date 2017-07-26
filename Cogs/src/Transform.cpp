@@ -128,6 +128,10 @@ namespace cogs
 		{
 				return m_localOrientation;
 		}
+		const glm::quat & Transform::localOrientationRaw() const noexcept
+		{
+				return m_localOrientationRaw;
+		}
 		const glm::vec3 & Transform::localScale() const noexcept
 		{
 				return m_localScale;

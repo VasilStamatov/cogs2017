@@ -16,6 +16,9 @@ namespace cogs
 				ResourceManager() {}
 				~ResourceManager() {}
 
+				ResourceManager(const ResourceManager& _other) = delete;
+				ResourceManager& operator=(const ResourceManager& _rhs) = delete;
+
 				template<typename T, typename... TArgs>
 				inline T* get(const std::string& _resName, TArgs&&... _constructionArgs)
 				{

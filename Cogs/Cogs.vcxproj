@@ -55,6 +55,7 @@
     <ClInclude Include="include\Renderer.h" />
     <ClInclude Include="include\Renderer2D.h" />
     <ClInclude Include="include\Renderer3D.h" />
+    <ClInclude Include="include\ResourceLoader.h" />
     <ClInclude Include="include\ResourceManager.h" />
     <ClInclude Include="include\RigidBody.h" />
     <ClInclude Include="include\Scene.h" />
@@ -67,7 +68,6 @@
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include\Timing.h" />
     <ClInclude Include="include\Transform.h" />
-    <ClInclude Include="include\Utils.h" />
     <ClInclude Include="include\Window.h" />
   </ItemGroup>
   <ItemGroup>
@@ -95,13 +95,13 @@
     <ClCompile Include="src\Random.cpp" />
     <ClCompile Include="src\Renderer2D.cpp" />
     <ClCompile Include="src\Renderer3D.cpp" />
+    <ClCompile Include="src\ResourceLoader.cpp" />
     <ClCompile Include="src\RIgidBody.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
     <ClCompile Include="src\Skybox.cpp" />
     <ClCompile Include="src\Spinner.cpp" />
     <ClCompile Include="src\SpriteRenderer.cpp" />
     <ClCompile Include="src\Timing.cpp" />
-    <ClCompile Include="src\Utils.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Color.cpp" />
     <ClCompile Include="src\Entity.cpp" />

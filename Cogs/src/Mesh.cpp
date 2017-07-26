@@ -1,7 +1,7 @@
 #include "../include/Mesh.h"
 
-#include "../include/Utils.h"
 #include "../include/Material.h"
+#include "../include/ResourceLoader.h"
 #include "../include/ResourceManager.h"
 
 #include <glm\glm.hpp>
@@ -11,15 +11,10 @@ namespace cogs
 {
 		Mesh::Mesh(const std::string& _filePath, ResourceManager* _rm)
 		{
-				std::vector<glm::vec3> positions;
-				std::vector<glm::vec2> uvs;
-				std::vector<glm::vec3> normals;
-				std::vector<glm::vec3> tangents;
-				std::vector<unsigned int> indices;
+				MeshData meshData;
+				ResourceLoader::loadMesh(_rm, _filePath, m_subMeshes, m_materials, meshData);
 
-				loadMesh(_rm, _filePath, m_subMeshes, positions, uvs, normals, tangents, indices, m_materials);
-
-				createBuffers(positions, uvs, normals, tangents, indices);
+				createBuffers(meshData);
 		}
 
 		Mesh::~Mesh()
@@ -46,7 +41,7 @@ namespace cogs
 
 				if (m_VBOs[0] != 0)
 				{
-						glDeleteBuffers(NUM_BUFFERS, m_VBOs);
+						glDeleteBuffers(static_cast<unsigned char>(BufferObject::NUM_BUFFERS), m_VBOs);
 						for (size_t i = 0; i < 5; i++)
 						{
 								m_VBOs[i] = 0;
@@ -54,14 +49,11 @@ namespace cogs
 				}
 		}
 
-		bool Mesh::isValid(const std::vector<glm::vec3>& _positions,
-				const std::vector<glm::vec2>& _uvs,
-				const std::vector<glm::vec3>& _normals,
-				const std::vector<glm::vec3>& _tangents) const
+		bool Mesh::isValid(const MeshData& _meshData) const
 		{
-				return _positions.size() == _uvs.size()
-						&& _uvs.size() == _normals.size()
-						&& _normals.size() == _tangents.size();
+				return _meshData.m_positions.size() == _meshData.m_uvs.size()
+						&&		 _meshData.m_uvs.size() == _meshData.m_normals.size()
+						&&		 _meshData.m_normals.size() == _meshData.m_tangents.size();
 		}
 
 		void Mesh::calcBounds(const std::vector<glm::vec3>& _positions)
@@ -109,67 +101,61 @@ namespace cogs
 				m_boundingSphere.m_radius = fmaxf((maxX - minX) * 0.5f, fmaxf((maxY - minY) * 0.5f, (maxZ - minZ) * 0.5f));
 		}
 
-		void Mesh::calcNormals(const std::vector<glm::vec3>& _positions,
-				std::vector<glm::vec3>& _normals,
-				std::vector<unsigned int>& _indices)
+		void Mesh::calcNormals(MeshData& _meshData)
 		{
-				_normals.clear();
-				_normals.reserve(_positions.size());
+				_meshData.m_normals.clear();
+				_meshData.m_normals.reserve(_meshData.m_positions.size());
 
-				for (unsigned int i = 0; i < _positions.size(); i++)
+				for (unsigned int i = 0; i < _meshData.m_positions.size(); i++)
 				{
-						_normals.push_back(glm::vec3(0, 0, 0));
+						_meshData.m_normals.push_back(glm::vec3(0, 0, 0));
 				}
 
-				for (unsigned int i = 0; i < _indices.size(); i += 3)
+				for (unsigned int i = 0; i < _meshData.m_indices.size(); i += 3)
 				{
-						int A = _indices.at(i);
-						int B = _indices.at(i + 1);
-						int C = _indices.at(i + 2);
+						int A = _meshData.m_indices.at(i);
+						int B = _meshData.m_indices.at(i + 1);
+						int C = _meshData.m_indices.at(i + 2);
 
-						glm::vec3 v1 = _positions.at(B) - _positions.at(A);
-						glm::vec3 v2 = _positions.at(C) - _positions.at(A);
+						glm::vec3 v1 = _meshData.m_positions.at(B) - _meshData.m_positions.at(A);
+						glm::vec3 v2 = _meshData.m_positions.at(C) - _meshData.m_positions.at(A);
 
 						glm::vec3 normal = glm::normalize(glm::cross(v1, v2));
 
-						_normals.at(A) += normal;
-						_normals.at(B) += normal;
-						_normals.at(C) += normal;
+						_meshData.m_normals.at(A) += normal;
+						_meshData.m_normals.at(B) += normal;
+						_meshData.m_normals.at(C) += normal;
 				}
 
-				for (unsigned int i = 0; i < _normals.size(); i++)
+				for (unsigned int i = 0; i < _meshData.m_normals.size(); i++)
 				{
-						_normals.at(i) = glm::normalize(_normals.at(i));
+						_meshData.m_normals.at(i) = glm::normalize(_meshData.m_normals.at(i));
 				}
 		}
 
-		void Mesh::calcTangents(const std::vector<glm::vec3>& _positions,
-				std::vector<glm::vec2>& _uvs,
-				std::vector<glm::vec3>& _normals,
-				std::vector<glm::vec3>& _tangents,
-				std::vector<unsigned int>& _indices)
+		void Mesh::calcTangents(MeshData& _meshData)
 		{
-				_tangents.clear();
-				_tangents.reserve(_positions.size());
+				_meshData.m_tangents.clear();
+				_meshData.m_tangents.reserve(_meshData.m_positions.size());
 
-				for (unsigned int i = 0; i < _positions.size(); i++)
+				for (unsigned int i = 0; i < _meshData.m_positions.size(); i++)
 				{
-						_tangents.push_back(glm::vec3(0, 0, 0));
+						_meshData.m_tangents.push_back(glm::vec3(0, 0, 0));
 				}
 
-				for (unsigned int i = 0; i < _indices.size(); i += 3)
+				for (unsigned int i = 0; i < _meshData.m_indices.size(); i += 3)
 				{
-						int A = _indices.at(i);
-						int B = _indices.at(i + 1);
-						int C = _indices.at(i + 2);
+						int A = _meshData.m_indices.at(i);
+						int B = _meshData.m_indices.at(i + 1);
+						int C = _meshData.m_indices.at(i + 2);
 
-						glm::vec3 edge1 = _positions.at(B) - _positions.at(A);
-						glm::vec3 edge2 = _positions.at(C) - _positions.at(A);
+						glm::vec3 edge1 = _meshData.m_positions.at(B) - _meshData.m_positions.at(A);
+						glm::vec3 edge2 = _meshData.m_positions.at(C) - _meshData.m_positions.at(A);
 
-						float deltaU1 = _uvs.at(B).x - _uvs.at(A).x;
-						float deltaU2 = _uvs.at(C).x - _uvs.at(A).x;
-						float deltaV1 = _uvs.at(B).y - _uvs.at(A).y;
-						float deltaV2 = _uvs.at(C).y - _uvs.at(A).y;
+						float deltaU1 = _meshData.m_uvs.at(B).x - _meshData.m_uvs.at(A).x;
+						float deltaU2 = _meshData.m_uvs.at(C).x - _meshData.m_uvs.at(A).x;
+						float deltaV1 = _meshData.m_uvs.at(B).y - _meshData.m_uvs.at(A).y;
+						float deltaV2 = _meshData.m_uvs.at(C).y - _meshData.m_uvs.at(A).y;
 
 						float dividend = (deltaU1 * deltaV2 - deltaU2 * deltaV1);
 						float f = dividend == 0.0f ? 0.0f : 1.0f / dividend;
@@ -180,112 +166,104 @@ namespace cogs
 						tangent.y = (f * (deltaV2 * edge1.y - deltaV1 * edge2.y));
 						tangent.z = (f * (deltaV2 * edge1.z - deltaV1 * edge2.z));
 
-						_tangents.at(A) += tangent;
-						_tangents.at(B) += tangent;
-						_tangents.at(C) += tangent;
+						_meshData.m_tangents.at(A) += tangent;
+						_meshData.m_tangents.at(B) += tangent;
+						_meshData.m_tangents.at(C) += tangent;
 				}
 
-				for (unsigned int i = 0; i < _tangents.size(); i++)
+				for (unsigned int i = 0; i < _meshData.m_tangents.size(); i++)
 				{
-						_tangents.at(i) = glm::normalize(_tangents.at(i));
+						_meshData.m_tangents.at(i) = glm::normalize(_meshData.m_tangents.at(i));
 				}
 		}
 
-		void Mesh::finalize(const std::vector<glm::vec3>& _positions,
-				std::vector<glm::vec2>& _uvs,
-				std::vector<glm::vec3>& _normals,
-				std::vector<glm::vec3>& _tangents,
-				std::vector<unsigned int>& _indices)
+		void Mesh::finalize(MeshData& _meshData)
 		{
-				calcBounds(_positions);
+				calcBounds(_meshData.m_positions);
 
-				if (isValid(_positions, _uvs, _normals, _tangents))
+				if (isValid(_meshData))
 				{
 						//already valid
 						return;
 				}
 
-				if (_uvs.size() == 0)
+				if (_meshData.m_uvs.size() == 0)
 				{
-						for (unsigned int i = _uvs.size(); i < _positions.size(); i++)
+						for (unsigned int i = _meshData.m_uvs.size(); i < _meshData.m_positions.size(); i++)
 						{
-								_uvs.push_back(glm::vec2(0.0f, 0.0f));
+								_meshData.m_uvs.push_back(glm::vec2(0.0f, 0.0f));
 						}
 				}
 
-				if (_normals.size() == 0)
+				if (_meshData.m_normals.size() == 0)
 				{
-						calcNormals(_positions, _normals, _indices);
+						calcNormals(_meshData);
 				}
 
-				if (_tangents.size() == 0)
+				if (_meshData.m_tangents.size() == 0)
 				{
-						calcTangents(_positions, _uvs, _normals, _tangents, _indices);
+						calcTangents(_meshData);
 				}
 
-				if (!isValid(_positions, _uvs, _normals, _tangents))
+				if (!isValid(_meshData))
 				{
 						printf("Mesh cannot be set up properly");
 						assert(false);
 				}
 		}
 
-		void Mesh::createBuffers(const std::vector<glm::vec3>& _positions,
-				std::vector<glm::vec2>& _uvs,
-				std::vector<glm::vec3>& _normals,
-				std::vector<glm::vec3>& _tangents,
-				std::vector<unsigned int>& _indices)
+		void Mesh::createBuffers(MeshData& _meshData)
 		{
-				finalize(_positions, _uvs, _normals, _tangents, _indices);
+				finalize(_meshData);
 
-				m_numIndices = _indices.size();
+				m_numIndices = _meshData.m_indices.size();
 
 				glGenVertexArrays(1, &m_VAO);
 				glBindVertexArray(m_VAO);
 
-				glGenBuffers(BufferObject::NUM_BUFFERS, m_VBOs);
+				glGenBuffers(static_cast<unsigned char>(BufferObject::NUM_BUFFERS), m_VBOs);
 
 				// Upload position data
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObject::POSITION]);
-				glBufferData(GL_ARRAY_BUFFER, _positions.size() * sizeof(_positions.at(0)), _positions.data(), GL_STATIC_DRAW);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObject::POSITION)]);
+				glBufferData(GL_ARRAY_BUFFER, _meshData.m_positions.size() * sizeof(_meshData.m_positions.at(0)), _meshData.m_positions.data(), GL_STATIC_DRAW);
 
-				glEnableVertexAttribArray(BufferObject::POSITION);
-				glVertexAttribPointer(BufferObject::POSITION, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glEnableVertexAttribArray(static_cast<unsigned char>(BufferObject::POSITION));
+				glVertexAttribPointer(static_cast<unsigned char>(BufferObject::POSITION), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 				// Upload UV data
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObject::TEXCOORD]);
-				glBufferData(GL_ARRAY_BUFFER, _uvs.size() * sizeof(_uvs.at(0)), _uvs.data(), GL_STATIC_DRAW);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObject::TEXCOORD)]);
+				glBufferData(GL_ARRAY_BUFFER, _meshData.m_uvs.size() * sizeof(_meshData.m_uvs.at(0)), _meshData.m_uvs.data(), GL_STATIC_DRAW);
 
-				glEnableVertexAttribArray(BufferObject::TEXCOORD);
-				glVertexAttribPointer(BufferObject::TEXCOORD, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glEnableVertexAttribArray(static_cast<unsigned char>(BufferObject::TEXCOORD));
+				glVertexAttribPointer(static_cast<unsigned char>(BufferObject::TEXCOORD), 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 				// Upload normals data
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObject::NORMAL]);
-				glBufferData(GL_ARRAY_BUFFER, _normals.size() * sizeof(_normals.at(0)), _normals.data(), GL_STATIC_DRAW);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObject::NORMAL)]);
+				glBufferData(GL_ARRAY_BUFFER, _meshData.m_normals.size() * sizeof(_meshData.m_normals.at(0)), _meshData.m_normals.data(), GL_STATIC_DRAW);
 
-				glEnableVertexAttribArray(BufferObject::NORMAL);
-				glVertexAttribPointer(BufferObject::NORMAL, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glEnableVertexAttribArray(static_cast<unsigned char>(BufferObject::NORMAL));
+				glVertexAttribPointer(static_cast<unsigned char>(BufferObject::NORMAL), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 				// Upload tangents data
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObject::TANGENT]);
-				glBufferData(GL_ARRAY_BUFFER, _tangents.size() * sizeof(_tangents.at(0)), _tangents.data(), GL_STATIC_DRAW);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObject::TANGENT)]);
+				glBufferData(GL_ARRAY_BUFFER, _meshData.m_tangents.size() * sizeof(_meshData.m_tangents.at(0)), _meshData.m_tangents.data(), GL_STATIC_DRAW);
 
-				glEnableVertexAttribArray(BufferObject::TANGENT);
-				glVertexAttribPointer(BufferObject::TANGENT, 3, GL_FLOAT, GL_FALSE, 0, nullptr);
+				glEnableVertexAttribArray(static_cast<unsigned char>(BufferObject::TANGENT));
+				glVertexAttribPointer(static_cast<unsigned char>(BufferObject::TANGENT), 3, GL_FLOAT, GL_FALSE, 0, nullptr);
 
 				// Upload index data for indexed rendering
-				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs[BufferObject::INDEX]);
-				glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indices.size() * sizeof(_indices.at(0)), _indices.data(), GL_STATIC_DRAW);
+				glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObject::INDEX)]);
+				glBufferData(GL_ELEMENT_ARRAY_BUFFER, _meshData.m_indices.size() * sizeof(_meshData.m_indices.at(0)), _meshData.m_indices.data(), GL_STATIC_DRAW);
 
 				// bind the buffer for world matrices
-				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[BufferObject::WORLDMAT]);
+				glBindBuffer(GL_ARRAY_BUFFER, m_VBOs[static_cast<unsigned char>(BufferObject::WORLDMAT)]);
 				// cannot upload mat4's all at once, so upload them as 4 vec4's
 				for (size_t i = 0; i < 4; i++)
 				{
 						//enable the channel of the current matrix row (4,5,6,7)
-						glEnableVertexAttribArray(BufferObject::WORLDMAT + i);
+						glEnableVertexAttribArray(static_cast<unsigned char>(BufferObject::WORLDMAT) + i);
 						//tell opengl how to read it
-						glVertexAttribPointer(BufferObject::WORLDMAT + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
+						glVertexAttribPointer(static_cast<unsigned char>(BufferObject::WORLDMAT) + i, 4, GL_FLOAT, GL_FALSE, sizeof(glm::mat4),
 								(const void*)(sizeof(float) * i * 4));
 
 						/** This function is what makes it per-instance data rather than per vertex
@@ -294,7 +272,7 @@ namespace cogs
 						* 1 means that this data is updated after 1 instance has been rendered
 						* by default it's 0 which makes it per-vertex and if it's over 1 than more than 1 instances will use this data
 						*/
-						glVertexAttribDivisor(BufferObject::WORLDMAT + i, 1);
+						glVertexAttribDivisor(static_cast<unsigned char>(BufferObject::WORLDMAT) + i, 1);
 				}
 
 				glBindVertexArray(0);

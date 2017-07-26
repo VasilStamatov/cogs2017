@@ -23,6 +23,9 @@ namespace cogs
 				Physics() {}
 				~Physics() {}
 
+				Physics(const Physics& _other) = delete;
+				Physics& operator=(const Physics& _rhs) = delete;
+
 				/**
 				* \brief Init the physics world with gravity
 				* \param[in] _xGravity - gravity to the x axis

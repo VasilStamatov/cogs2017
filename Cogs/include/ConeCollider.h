@@ -4,9 +4,6 @@
 
 namespace cogs
 {
-		/**
-		* \brief Instantiates a btConeShape using the passed radius and height
-		*/
 		class ConeCollider : public Collider
 		{
 		public:

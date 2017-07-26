@@ -1,8 +1,7 @@
 #include "../include/GLCubemapTexture.h"
-#include "../include/Utils.h"
+#include "../include/ResourceLoader.h"
 
 #include <GL\glew.h>
-#include <SOIL2\SOIL2.h>
 
 namespace cogs
 {
@@ -10,29 +9,12 @@ namespace cogs
 		{
 				m_fileNames = _fileNames;
 
-				m_id = SOIL_load_OGL_cubemap
-				(
-						_fileNames.at(0).c_str(),
-						_fileNames.at(1).c_str(),
-						_fileNames.at(2).c_str(),
-						_fileNames.at(3).c_str(),
-						_fileNames.at(4).c_str(),
-						_fileNames.at(5).c_str(),
-						SOIL_LOAD_AUTO,
-						m_id,
-						SOIL_FLAG_MIPMAPS
-				);
-				if (m_id == 0)
+				if (!ResourceLoader::loadSOIL2Cubemap(m_fileNames, &m_id))
 				{
-						printf("SOIL loading error: '%s'\n", SOIL_last_result());
+						throw std::runtime_error("Texture failed to load");
 				}
-
-				/*if (!loadCubemap(m_fileNames, &m_width, &m_height, &m_id))
-				{
-				throw std::runtime_error("Texture failed to load");
-				}*/
 		}
-		
+
 		GLCubemapTexture::~GLCubemapTexture()
 		{
 				if (m_id != 0)

@@ -19,8 +19,5 @@ namespace cogs
 						m_collisionShape = std::make_unique<btSphereShape>(_radius);
 				}
 				virtual ~SphereCollider() {}
-
-		private:
-
 		};
 }

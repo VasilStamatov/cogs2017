@@ -1,7 +1,5 @@
 #pragma once
 
-#include <memory>
-
 namespace cogs
 {
 		using uint = unsigned int;
@@ -10,9 +8,6 @@ namespace cogs
 
 		class Entity;
 
-		/**
-		* \brief Renderer base class
-		*/
 		class Renderer
 		{
 		public:

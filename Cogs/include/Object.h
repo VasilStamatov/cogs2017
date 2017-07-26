@@ -13,7 +13,7 @@ namespace cogs
 				void destroy();
 				void setName(const std::string& _name);
 				const std::string& getName() const noexcept;
-				bool isAlive();
+				bool isAlive() const noexcept;
 
 				static void destroy(Object* _obj);
 

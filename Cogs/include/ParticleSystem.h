@@ -34,85 +34,6 @@ namespace cogs
 		* Add this to any Entity and it can start emitting particles */
 		class ParticleSystem : public Component
 		{
-		private:
-				/**
-				* \brief custom update function for each particle system
-				* @param Particle& - the particle to be updated
-				* @param vec3 - the gravity applied to the particle
-				* @param float - deltaTime
-				*/
-				std::function<void(Particle&, const glm::vec3&, float)> m_updateFunc;
-
-				/** Dynamically allocated array of particles for cache friendliness */
-				Particle* m_particles{ nullptr };
-
-				glm::vec3 m_worldGravity{ 0.0f, 0.0f, 0.0f }; ///< gravity affecting the particles
-
-				Color m_particlesColor{ Color::white };
-
-				/** The speed at which the particles decay */
-				float m_decayRate{ 0.1f };
-
-				/** The radius of the particles */
-				float m_particlesRadius{ 0.5f };
-
-				/** The mass of the particles*/
-				//float m_particlesMass{ 1.0f };
-
-				/* accumulator for the particles per second */
-				float m_accumulator{ 0.0f };
-
-				/* number of particles generated per frame */
-				float m_particlesPerFrame{ 0.0f };
-
-				/** index of the last available particle in the particle array */
-				int m_lastFreeParticle{ 0 };
-				/** number of max particles alive at one time */
-				int m_maxParticles{ 0 };
-				/** Current number of active particles in spawned */
-				int m_numActiveParticles{ 0 };
-				/** Initial speed of the particles when spawned */
-				float m_initialSpeed{ 1.0f };
-
-				bool m_additive{ true }; ///< flag if the particles are additively blended
-				bool m_isPlaying{ false }; ///< flag if the particle system is paused or playing
-				bool m_isStopped{ false }; ///< flag if the particle emission is stopped or not
-				bool m_playOnInit{ true }; ///< flag if the particles should start spawning on startup
-
-				GLTexture2D* m_texture;
-
-				/** reference to the particle renderer where this particle system will submit to */
-				ParticleRenderer* m_renderer;
-
-		protected:
-				/**
-				* \brief generate the number of particles required for this frame (depends on particles per second)
-				*/
-				void generateParticles(float _deltaTime);
-				/**
-				* \brief spawns a single particle on the first free position found, unless there are no free positions
-				*/
-				void spawnParticle();
-				/**
-				* \brief spawns a single particle on the first free position found, unless there are no free positions
-				*/
-				void freeParticle(int _particleIndex);
-
-				/**
-				* \brief the first function called upon adding this component to an entity
-				*/
-				void init() override;
-
-				/**
-				* \brief The update function called every frame
-				*/
-				void update(float _deltaTime) override;
-
-				/**
-				* \brief The function that submits the particles to the particle renderer
-				*/
-				void render() override;
-
 		public:
 				ParticleSystem(ParticleRenderer* _renderer,
 						int _maxParticles,
@@ -175,5 +96,65 @@ namespace cogs
 				int getNumActiveParticles()	const noexcept { return m_numActiveParticles; }
 				bool getAdditive()										const noexcept { return m_additive; }
 				Particle* getParticles()				const noexcept { return m_particles; }
+
+		protected:
+				void generateParticles(float _deltaTime);
+				void spawnParticle();
+				void freeParticle(int _particleIndex);
+
+				void init() override;
+
+				void update(float _deltaTime) override;
+
+				void render() override;
+
+		private:
+				/**
+				* \brief custom update function for each particle system
+				* @param Particle& - the particle to be updated
+				* @param vec3 - the gravity applied to the particle
+				* @param float - deltaTime
+				*/
+				std::function<void(Particle&, const glm::vec3&, float)> m_updateFunc;
+
+				glm::vec3 m_worldGravity{ 0.0f, 0.0f, 0.0f }; ///< gravity affecting the particles
+
+				Particle* m_particles{ nullptr };
+
+				GLTexture2D* m_texture;
+
+				/** reference to the particle renderer where this particle system will submit to */
+				ParticleRenderer* m_renderer;
+
+				Color m_particlesColor{ Color::getWhite() };
+
+				/** The speed at which the particles decay */
+				float m_decayRate{ 0.1f };
+
+				/** The radius of the particles */
+				float m_particlesRadius{ 0.5f };
+
+				/** The mass of the particles*/
+				//float m_particlesMass{ 1.0f };
+
+				/* accumulator for the particles per second */
+				float m_accumulator{ 0.0f };
+
+				/* number of particles generated per frame */
+				float m_particlesPerFrame{ 0.0f };
+
+				/** index of the last available particle in the particle array */
+				int m_lastFreeParticle{ 0 };
+				/** number of max particles alive at one time */
+				int m_maxParticles{ 0 };
+				/** Current number of active particles in spawned */
+				int m_numActiveParticles{ 0 };
+				/** Initial speed of the particles when spawned */
+				float m_initialSpeed{ 1.0f };
+
+				bool m_additive{ true }; ///< flag if the particles are additively blended
+				bool m_isPlaying{ false }; ///< flag if the particle system is paused or playing
+				bool m_isStopped{ false }; ///< flag if the particle emission is stopped or not
+				bool m_playOnInit{ true }; ///< flag if the particles should start spawning on startup
 		};
 }

@@ -21,44 +21,6 @@ namespace cogs
 
 		class ParticleRenderer : public Renderer
 		{
-		private:
-				/** Enum for the buffer objects */
-				enum BufferObjects : unsigned int
-				{
-						POSITION,
-						INSTANCED_ATTRIBS,
-
-						INDEX,
-
-						NUM_BUFFERS
-				};
-
-				VBO m_VBOs[BufferObjects::NUM_BUFFERS] = { 0 }; ///< the vbos
-				VAO m_VAO{ 0 };
-
-				struct InstanceAttributes
-				{
-						Color color;
-						glm::vec4 worldPosAndSize;
-						glm::vec4 texOffsets;
-						float blendFactor;
-				};
-
-				struct InstanceData
-				{
-						bool isTexAdditive{ true };
-						float texNumOfRows{ 0.0f };
-						std::vector<InstanceAttributes> instanceAttribs;
-				};
-				//key = texture id (all sprites of the same texture to be instanced rendered)
-				//value = instance data = per instance data
-				std::unordered_map<unsigned int, InstanceData> m_particlesMap;
-
-				GLSLProgram* m_shader;
-				ResourceManager& m_rm;
-		private:
-				void sortParticles();
-
 		public:
 				ParticleRenderer(ResourceManager& _rm);
 				~ParticleRenderer();
@@ -75,5 +37,42 @@ namespace cogs
 				void flush() override;
 				//disposes of buffer objects and data
 				void dispose() override;
+
+		private:
+				void sortParticles();
+
+				enum class BufferObjects : unsigned int
+				{
+						POSITION,
+						INSTANCED_ATTRIBS,
+
+						INDEX,
+
+						NUM_BUFFERS
+				};
+
+				struct InstanceAttributes
+				{
+						glm::vec4 worldPosAndSize;
+						glm::vec4 texOffsets;
+						Color color;
+						float blendFactor;
+				};
+
+				struct InstanceData
+				{
+						std::vector<InstanceAttributes> instanceAttribs;
+						float texNumOfRows{ 0.0f };
+						bool isTexAdditive{ true };
+				};
+
+		private:
+				//key = texture id (all sprites of the same texture to be instanced rendered)
+				//value = instance data = per instance data
+				std::unordered_map<unsigned int, InstanceData> m_particlesMap;
+				ResourceManager& m_rm;
+				VBO m_VBOs[static_cast<unsigned char>(BufferObjects::NUM_BUFFERS)] = { 0 }; ///< the vbos
+				VAO m_VAO{ 0 };
+				GLSLProgram* m_shader;
 		};
 }

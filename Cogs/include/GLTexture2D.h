@@ -8,33 +8,18 @@
 
 namespace cogs
 {
-		enum class TextureType
-		{
-				SINGLE, //single texture
-				MULTIPLE //multiple textures in the texture (texture atlast/spritesheet)
-		};
-		/**
-		* \brief class to handle opengl 2D textures
-		*/
 		class GLTexture2D : public Texture
 		{
 		public:
-				/**
-				* \brief construct the texture with a name and the filepath of the texture
-				*/
 				GLTexture2D(const std::string& _filePath);
 			 ~GLTexture2D();
 
-				/**
-				* \brief overriden bind/unbind functions from the base Texture class
-				*/
 				void bind()   const override;
 				void unbind() const override;
 
 				glm::vec4 getTexCoords(int _index);
 				glm::vec2 getTexOffsets(int _index);
 
-				//operator overloads
 				inline bool operator> (const GLTexture2D& _rhs) const
 				{
 						return m_id > _rhs.m_id;
@@ -44,17 +29,16 @@ namespace cogs
 						return m_id != _rhs.m_id;
 				}
 
-				//getters
 				inline const std::string& getFilePath() const { return m_filePath; }
-				inline const TextureType& getType()					const { return m_type; }
 				inline const glm::ivec2& getDims()						const { return m_tileDims; }
+				inline bool isSingle()																		const { return m_isSingle; }
 
-				inline void setType(const TextureType& _type) { m_type = _type; }
 				inline void setDims(const glm::ivec2& _tileDims) { m_tileDims = _tileDims; }
+				inline void setTextureType(bool _isSingle) { m_isSingle = _isSingle; }
 
 		private:
 				std::string m_filePath{ "" }; ///< the filepath of the texture
 				glm::ivec2 m_tileDims{ 0,0 }; ///< the number of rows and cols
-				TextureType m_type{ TextureType::SINGLE }; ///< type of the texture
+				bool m_isSingle{ true };
 		};
 }

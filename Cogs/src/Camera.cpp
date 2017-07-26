@@ -42,7 +42,8 @@ namespace cogs
 		void Camera::init()
 		{
 				m_transform = m_entity->transform();
-				m_oldTransform = *m_transform;
+				refreshInternalTransform();
+
 				m_frustum.setCamInternals(glm::radians((float)m_fov), Window::getAspect(), m_nearPlane, m_farPlane);
 				updateView();
 
@@ -167,13 +168,19 @@ namespace cogs
 
 		void Camera::updateView()
 		{
-				m_oldTransform = *m_transform;
+				refreshInternalTransform();
 
-				m_viewMatrix = glm::inverse(m_oldTransform.worldTransform());
+				m_viewMatrix = glm::inverse(m_transform->worldTransform());
 
-				m_frustum.update(m_oldTransform.worldPosition(),
-						m_oldTransform.worldForwardAxis(),
-						m_oldTransform.worldRightAxis(),
-						m_oldTransform.worldUpAxis());
+				m_frustum.update(m_transform->worldPosition(),
+						m_transform->worldForwardAxis(),
+						m_transform->worldRightAxis(),
+						m_transform->worldUpAxis());
+		}
+		void Camera::refreshInternalTransform()
+		{
+				m_oldTransform.setWorldPosition(m_transform->worldPosition());
+				m_oldTransform.setWorldOrientation(m_transform->worldScale());
+				m_oldTransform.setWorldScale(m_transform->worldScale());
 		}
 }

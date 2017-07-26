@@ -1,6 +1,7 @@
 #include <iostream>
 
 #include <Cogs\include\Application.h>
+#include <Cogs\include\BulletDebugRenderer.h>
 
 #include "../include/TestScene.h"
 #include "../include/MainMenuScene.h"
@@ -166,14 +167,59 @@
 
 #undef main
 
+struct Test1
+{
+		bool m_running{ false }; // 1
+		cogs::Renderer2D m_renderer2D; //68
+		cogs::ParticleRenderer m_particleRenderer; //68
+		cogs::Renderer3D m_renderer3D; //44
+		cogs::SceneManager m_sceneManager; //24
+		cogs::Physics m_physics; //48
+		cogs::EntityManager m_entityManager; //16
+		cogs::BulletDebugRenderer m_debugRenderer; //60
+		cogs::FpsLimiter m_fpsLimiter; //40
+		cogs::ResourceManager m_resourceManager; //16
+		cogs::Window m_window; //40
+};
+
+struct Test2
+{
+		cogs::Window m_window;																 			 //40
+		cogs::FpsLimiter m_fpsLimiter;												 //40
+		cogs::SceneManager m_sceneManager;								 //24
+		cogs::EntityManager m_entityManager;						 //16
+		cogs::Renderer2D m_renderer2D;												 //68
+		cogs::Renderer3D m_renderer3D;												 //44
+		cogs::Physics m_physics;																		 //48
+		cogs::ResourceManager m_resourceManager;			//16
+		cogs::ParticleRenderer m_particleRenderer; //68
+		cogs::BulletDebugRenderer m_debugRenderer; //60
+		bool m_running;																											 // 1
+};
+
 int main(int argc, char** argv)
 {
-		cogs::Application app;
+		std::cout << sizeof(cogs::Window) << std::endl;
+		std::cout << sizeof(cogs::FpsLimiter) << std::endl;
+		std::cout << sizeof(cogs::SceneManager) << std::endl;
+		std::cout << sizeof(cogs::EntityManager) << std::endl;
+		std::cout << sizeof(cogs::Renderer2D) << std::endl;
+		std::cout << sizeof(cogs::Renderer3D) << std::endl;
+		std::cout << sizeof(cogs::Physics) << std::endl;
+		std::cout << sizeof(cogs::ResourceManager) << std::endl;
+		std::cout << sizeof(cogs::ParticleRenderer) << std::endl;
+		std::cout << sizeof(cogs::BulletDebugRenderer) << std::endl;
+		std::cout << sizeof(Test1) << std::endl;
+		std::cout << sizeof(Test2) << std::endl;
 
-		app.addScene(std::make_unique<MainMenu>(&app));
-		app.addScene(std::make_unique<TestScene>(&app));
 
-		app.run("Test", 1024, 576);
 
+		//cogs::Application app;
+
+		//app.addScene(std::make_unique<MainMenu>(&app));
+		//app.addScene(std::make_unique<TestScene>(&app));
+
+		//app.run("Test", 1024, 576);
+		std::cin.get();
 		return 0;
 }

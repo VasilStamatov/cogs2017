@@ -7,12 +7,14 @@ namespace cogs
 		class EntityManager
 		{
 		private:
-				// Atoms and marks storage.
 				std::vector<std::unique_ptr<Entity>> m_entities;
 
 		public:
 				EntityManager();
 				~EntityManager();
+
+				EntityManager(const EntityManager& _other) = delete;
+				EntityManager& operator=(const EntityManager& _rhs) = delete;
 
 				Entity* create();
 				Entity* create(const std::string& _name);

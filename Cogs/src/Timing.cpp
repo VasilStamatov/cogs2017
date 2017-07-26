@@ -1,5 +1,6 @@
 #include "../include/Timing.h"
-#include "../include/Utils.h"
+
+#include <SDL\SDL_timer.h>
 
 namespace cogs
 {
@@ -83,5 +84,10 @@ namespace cogs
 				m_fps = 1.0f / m_deltaTime;
 
 				return m_fps;
+		}
+
+		void FpsLimiter::sleep(float _millis)
+		{
+				SDL_Delay(static_cast<Uint32>(_millis));
 		}
 }
